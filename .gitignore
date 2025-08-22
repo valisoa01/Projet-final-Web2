@@ -20,4 +20,6 @@ rad.json
 *.flf
 #Test results file
 TestResults.xml
-Backend/.env
+backend/.env
+backend/uploads
+backend/node-moduls
