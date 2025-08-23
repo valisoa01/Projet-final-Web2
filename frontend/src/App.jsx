@@ -1,8 +1,10 @@
- const App = () => {
+import Signin from "./Components/Signin"
+const App = () => {
     return (
-        <div>
-
-        </div>
+        <> 
+        <Signin></Signin>
+        
+        </>
     )
 }
 export default App
