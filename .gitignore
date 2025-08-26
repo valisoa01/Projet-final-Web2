@@ -23,3 +23,5 @@ TestResults.xml
 backend/.env
 backend/uploads
 backend/node-moduls
+fronted/ ./env
+
