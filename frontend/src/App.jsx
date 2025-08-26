@@ -1,3 +1,4 @@
+ 
 import { Routes, Route } from 'react-router-dom';
 import Register from './Components/Auth/Register';
 import Login from './Components/Auth/Login';
@@ -14,3 +15,4 @@ function App() {
 }
 
 export default App;
+ 
