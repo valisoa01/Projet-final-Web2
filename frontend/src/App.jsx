@@ -2,7 +2,7 @@
 import Register from './Components/Auth/Register';
 import Home from './pages/Home';
 import Signin from './Components/Auth/Signin';
-
+import Dashboard from './Components/Site/Dashboard';
 function App() {
   return (
     <Routes>
@@ -12,6 +12,7 @@ function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/Signin" element={<Signin />} />
       <Route path="/home" element={<Home />} />
+      <Route path="/dashboard" element={<Dashboard />} /> 
     </Routes>
   );
 }
