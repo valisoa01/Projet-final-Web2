@@ -81,7 +81,7 @@
   };
 
   return (
-    <div className="bg-white shadow-md h-[10vh] w-screen flex flex-row items-center">
+    <div className="bg-white shadow-md h-[10vh] w-screen flex flex-row items-center mb-5">
       <Name />
       <SearchButton />
       <NotificationButton />
