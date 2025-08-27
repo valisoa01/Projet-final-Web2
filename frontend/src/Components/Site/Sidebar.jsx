@@ -2,7 +2,8 @@
 
 const Sidebar = () => {
   return (
-    <aside className="h-screen w-64 bg-white shadow-md flex flex-col justify-between">
+    <div>
+        <aside className=" w-64 h-full bg-white shadow-md flex flex-col justify-between">
       {/* Partie haute */}
       <div>
         {/* Profil utilisateur */}
@@ -62,29 +63,31 @@ const Sidebar = () => {
       </div>
 
       {/* Partie basse */}
-      <div className="p-4 border-t">
-        <ul className="space-y-2">
-          <li>
-            <a
-              href="#"
-              className="flex items-center gap-3 text-gray-700 hover:bg-gray-100 p-2 rounded-lg"
-            >
-              <User className="w-5 h-5" />
-              Profile
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              className="flex items-center gap-3 text-gray-700 hover:bg-gray-100 p-2 rounded-lg"
-            >
-              <Settings className="w-5 h-5" />
-              Setting
-            </a>
-          </li>
-        </ul>
-      </div>
+       <div className="p-4 border-t">
+    <ul className="space-y-2">
+      <li>
+        <a
+          href="#"
+          className="flex items-center gap-3 text-gray-700 hover:bg-gray-100 p-2 rounded-lg"
+        >
+          <User className="w-5 h-5" />
+          Profile
+        </a>
+      </li>
+      <li>
+        <a
+          href="#"
+          className="flex items-center gap-3 text-gray-700 hover:bg-gray-100 p-2 rounded-lg"
+        >
+          <Settings className="w-5 h-5" />
+          Setting
+        </a>
+      </li>
+    </ul>
+  </div>
     </aside>
+    </div>
+    
   );
 };
 
