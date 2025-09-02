@@ -49,15 +49,7 @@ const Sidebar = () => {
                 Incomes
               </a>
             </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center gap-3 p-3 text-gray-700 hover:bg-gray-100 rounded-lg"
-              >
-                <Users className="w-5 h-5" />
-                Candidate
-              </a>
-            </li>
+           
           </ul>
         </nav>
       </div>
