@@ -42,7 +42,7 @@ const Sidebar = () => {
             </li>
             <li>
               <a
-                href="#"
+                href="./Incomes.jsx"
                 className="flex items-center gap-3 p-3 text-gray-700 hover:bg-gray-100 rounded-lg"
               >
                 <Briefcase className="w-5 h-5" />
