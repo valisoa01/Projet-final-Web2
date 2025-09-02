@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "doudou",
+    "password": "1622Val++",
+    "database": "tracker",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "doudou",
+    "password": "1622Val++",
+    "database": "tracker",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "doudou",
+    "password": "1622Val++",
+    "database": "tracker",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
+}
