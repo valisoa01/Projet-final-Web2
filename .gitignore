@@ -23,5 +23,8 @@ TestResults.xml
 backend/.env
 backend/uploads
 backend/node-moduls
-fronted/ ./env
+frontend/ ./env
+frontend/node_module
 
+
+/generated/prisma
