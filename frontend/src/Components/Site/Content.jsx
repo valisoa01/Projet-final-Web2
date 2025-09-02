@@ -1,7 +1,7 @@
 const Content = () => {
   return (
     <div className="p-8 bg-white text-gray-800 w-500">
-      <div className="bg-red-500 p-6 rounded-lg shadow-lg mb-8 hidden" id="alert">
+      <div className="bg-red-500 rounded-lg shadow-lg mb-8 hidden" id="alert">
         <div className="text-xl font-bold text-white">You've exceeded your monthly budget by $111.47.</div>
       </div>
       <div className="bg-purple-100 p-6 rounded-lg shadow-lg mb-8">
@@ -35,8 +35,8 @@ const Content = () => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-purple-100 p-6 rounded-lg shadow-lg">
-          <div className="text-2xl font-semibold mb-6 text-purple-700">Expense by Category</div>
-          <div className="h-96">
+          <div className="text-2xl font-semibold  text-purple-700">Expense by Category</div>
+          <div className="h-90">
             <div className="flex justify-center items-center h-full">
               <div className="text-center">
                 <div className="w-48 h-48 bg-purple-300 rounded-full mb-4" id="pieChart"></div>
