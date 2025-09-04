@@ -22,6 +22,7 @@ rad.json
 TestResults.xml
 backend/.env
 backend/uploads
-backend/node-moduls
-fronted/ ./env
+backend/node-modules
+frontend/ ./env
+frontend/node_modules
 
