@@ -13,7 +13,7 @@ import {
 // Register Chart.js components
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-const Content = () => {
+const Content = ({ className }) => {
   // Static data for stats and charts
   const stats = {
     totalIncome: 5000,
@@ -44,7 +44,7 @@ const Content = () => {
   };
 
   return (
-    <div className="p-8 bg-white text-gray-800 w-full max-w-7xl mx-auto">
+    <div className={`p-8 bg-white text-gray-800 w-full max-w-7xl mx-auto ${className}`}>
       {/* Alert */}
       <div className="bg-red-500 rounded-lg shadow-lg mb-8 hidden" id="alert">
         <div className="text-xl font-bold text-white p-4">
