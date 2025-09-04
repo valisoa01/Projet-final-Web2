@@ -55,7 +55,7 @@ const Content = ({ className }) => {
       {/* Filters */}
       <div className="bg-purple-100 p-6 rounded-lg shadow-lg mb-8">
         <div className="text-2xl font-semibold mb-4 text-purple-700">
-          Filtre tes Dépenses
+          Filter your Expenses
         </div>
         <div className="flex flex-col md:flex-row gap-6">
           <input
