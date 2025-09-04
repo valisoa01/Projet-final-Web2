@@ -25,3 +25,10 @@ backend/uploads
 backend/node-moduls
 fronted/ ./env
 
+# Node modules
+frontend/node_modules/
+backend/node_modules/
+
+# Vite build
+frontend/.vite/
+frontend/dist/
