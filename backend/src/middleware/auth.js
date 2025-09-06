@@ -1,23 +1,36 @@
 // src/middleware/auth.js
 import jwt from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
 
 const auth = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) return res.status(401).json({ message: 'No token provided' });
-
-  const token = authHeader.split(' ')[1];
   try {
-    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
-    const user = await prisma.users.findUnique({ where: { id: decoded.id } });
-    if (!user) return res.status(401).json({ message: 'User not found' });
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    
+    if (!token) {
+      return res.status(401).json({ message: 'Accès refusé, token manquant' });
+    }
 
-    req.user = user;
+    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+    
+    // Utiliser directement les informations du token sans vérifier en base
+    // (moins sécurisé mais plus rapide)
+    req.user = {
+      id: decoded.id,
+      email: decoded.email
+    };
+    
     next();
-  } catch (err) {
-    res.status(401).json({ message: 'Invalid token' });
+  } catch (error) {
+    console.error('Auth middleware error:', error);
+    
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({ message: 'Token expiré' });
+    }
+    
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({ message: 'Token invalide' });
+    }
+    
+    res.status(401).json({ message: 'Erreur d\'authentification' });
   }
 };
 
