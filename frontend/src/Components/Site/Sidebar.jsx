@@ -2,7 +2,7 @@
 import { Home, Wallet, Briefcase, User, Settings } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-
+ 
 const Sidebar = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
@@ -82,7 +82,7 @@ const Sidebar = () => {
               </li>
               <li>
                 <button
-                  onClick={() => navigate('/incomes')}
+                     onClick={() => navigate('/incomes')}
                   className="flex items-center gap-3 p-3 text-gray-700 hover:bg-purple-50 hover:text-purple-600 rounded-lg transition-colors duration-200 w-full text-left"
                 >
                   <Briefcase className="w-5 h-5 text-gray-600 group-hover:text-purple-600" />

@@ -6,11 +6,14 @@ import Signin from './Components/Auth/Signin';
 import Dashboard from './Components/Site/Dashboard';
 import Profile from './Components/Profile/Profile';
 import Settings from './Components/Profile/Settings';
+import Incomes from './Components/Site/Incomes';
 function App() {
   return (
     <Routes>
       {/* Route par défaut : redirige "/" vers "/login" */}
       <Route path="/" element={<Navigate to="/Signin" replace />} />
+      <Route path="/incomes" element={<Incomes />} />
+
 
       <Route path="/signup" element={<Signup />} />
       <Route path="/Signin" element={<Signin />} />
