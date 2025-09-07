@@ -1,4 +1,4 @@
-generator client {
+ generator client {
   provider = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
@@ -19,6 +19,8 @@ model Users {
   Categories Categories[]
   Expenses  Expenses[]
   Incomes   Incomes[]
+
+  @@map("users")
 }
 
 model Categories {
@@ -30,6 +32,8 @@ model Categories {
   UserId    Int
   Users     Users    @relation(fields: [UserId], references: [id])
   Expenses  Expenses[]
+
+  @@map("categories")
 }
 
 model Expenses {
@@ -45,6 +49,8 @@ model Expenses {
   CategoryId  Int
   Categories  Categories @relation(fields: [CategoryId], references: [id])
   Users       Users      @relation(fields: [UserId], references: [id])
+
+  @@map("expenses")
 }
 
 model Incomes {
@@ -57,4 +63,6 @@ model Incomes {
   updatedAt   DateTime @updatedAt @db.Timestamptz(6)
   UserId      Int
   Users       Users    @relation(fields: [UserId], references: [id])
+
+  @@map("incomes")
 }

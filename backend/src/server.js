@@ -1,9 +1,12 @@
-// server.js
+ // server.js
+import dotenv from "dotenv";
+dotenv.config(); // ← Charge les variables d'environnement
+
 import express from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth.js';
 import usersRoutes from './routes/users.js';
-import dashboardRoutes from './routes/dashboard.js'; // ← Ajoutez cette ligne
+import dashboardRoutes from './routes/dashboard.js';
 import { handleUploadError } from './utils/upload.js';
 
 const app = express();
@@ -22,7 +25,7 @@ app.use('/uploads', express.static('uploads'));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
-app.use('/api/dashboard', dashboardRoutes); // ← Ajoutez cette ligne
+app.use('/api/dashboard', dashboardRoutes);
 
 // Middleware de gestion d'erreurs
 app.use(handleUploadError);
