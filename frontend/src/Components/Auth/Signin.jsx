@@ -33,7 +33,8 @@ const Signin = () => {
       const res = await API.post('/auth/signin', formData, {
         headers: { 
           'Content-Type': 'application/json',
-        }
+        },
+        withCredentials:true
       });
       
       alert('Connexion réussie !');
@@ -44,8 +45,14 @@ const Signin = () => {
         localStorage.setItem('username', res.data.username);
         localStorage.setItem('profileUrl', res.data.profileUrl || '');
       }
-      if (res.data.token) localStorage.setItem('token', res.data.token);
-      
+      if(res.data.token) {
+        localStorage.setItem('token', res.data.token);
+        console.log('Token stocké dans localStorage (fallback');
+        
+      } else {
+        console.log('Token géré par cookies');
+        
+      }  
       navigate('/dashboard');
     } catch (err) {
       console.error('Erreur complète:', err);

@@ -64,7 +64,8 @@ const Signup = () => {
       const res = await API.post('/auth/signup', formDataToSend, {
         headers: { 
           'Content-Type': 'multipart/form-data',
-        }
+        },
+        withCredentials:true
       });
       
       alert(res.data.message || 'Inscription réussie !');
@@ -75,8 +76,14 @@ const Signup = () => {
         localStorage.setItem('username', res.data.username);
         localStorage.setItem('profileUrl', res.data.profileUrl || '');
       }
-      if (res.data.token) localStorage.setItem('token', res.data.token);
-      
+      if (res.data.token) {
+        localStorage.setItem('token', res.data.token);
+        console.log('Token stoké dans localStorage (fallback)');
+        
+      } else {
+        console.log('Token géré par cookies');
+        
+      }   
       navigate('/dashboard');
     } catch (err) {
       console.error('Erreur complète:', err);
