@@ -23,8 +23,7 @@ const Signin = () => {
     e.preventDefault();
     setError('');
     
-    // Validation côté client
-    if (!formData.email || !formData.password) {
+     if (!formData.email || !formData.password) {
       setError('Tous les champs obligatoires doivent être remplis');
       return;
     }
@@ -39,8 +38,7 @@ const Signin = () => {
       
       alert('Connexion réussie !');
       
-      // STOCKER TOUTES LES INFORMATIONS UTILISATEUR
-      if (res.data.userId) {
+       if (res.data.userId) {
         localStorage.setItem('userId', res.data.userId);
         localStorage.setItem('userEmail', res.data.email);
         localStorage.setItem('username', res.data.username);
@@ -72,8 +70,7 @@ const Signin = () => {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-gray-50">
-      {/* Left Panel */}
-      <div className="w-full md:w-1/2 bg-gradient-to-br from-purple-700 to-indigo-900 flex flex-col items-center justify-center p-8 text-white">
+       <div className="w-full md:w-1/2 bg-gradient-to-br from-purple-700 to-indigo-900 flex flex-col items-center justify-center p-8 text-white">
         <h3 className="text-2xl font-bold mb-10">CodeSquid</h3>
         <div className="w-64 h-64 bg-purple-500 rounded-full mb-10 flex items-center justify-center text-6xl">🐙</div>
         <h3 className="text-2xl font-semibold mb-4 text-center">
@@ -84,10 +81,9 @@ const Signin = () => {
         </p>
       </div>
 
-      {/* Right Panel */}
-      <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-8">
+       <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-8">
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-          Sign In to Access Your Dashboard
+          Sign 
         </h2>
         
         <div className="flex gap-4 mb-6">
@@ -102,7 +98,7 @@ const Signin = () => {
             type="button"
             className="flex items-center gap-2 border px-4 py-2 rounded-lg shadow-sm hover:bg-gray-100 transition-colors"
           >
-            <span className="w-5 h-5 bg-gray-800 rounded-full"></span>
+            <span className="w-5 h-5 bg-gray-800 rounded-full cursor-pointer"></span>
             <span>Sign in with Github</span>
           </button>
         </div>
@@ -112,7 +108,7 @@ const Signin = () => {
             <div className="w-full border-t border-gray-300"></div>
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-gray-50 text-gray-500">Or continue with email</span>
+            <span className="px-2 bg-gray-50 text-gray-500 cursor-pointer">Or continue with email</span>
           </div>
         </div>
         
@@ -185,7 +181,7 @@ const Signin = () => {
           Don't have an account?{' '}
           <Link 
             to="/signup"
-            className="text-purple-600 font-semibold cursor-pointer hover:underline"
+            className="text-purple-600 font-semibold cursor-pointer hover:underline "
           >
             SIGN UP
           </Link>

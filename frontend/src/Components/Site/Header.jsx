@@ -1,4 +1,3 @@
-// Header.jsx
 import { LogOut, Bell, Moon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -8,7 +7,6 @@ const Header = () => {
   const [username, setUsername] = useState('');
 
   useEffect(() => {
-    // Récupérez le username depuis le localStorage
     const storedUsername = localStorage.getItem('username');
     if (storedUsername) {
       setUsername(storedUsername);

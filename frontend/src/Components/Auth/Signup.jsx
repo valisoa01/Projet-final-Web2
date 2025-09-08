@@ -34,8 +34,7 @@ const Signup = () => {
     e.preventDefault();
     setError('');
     
-    // Validation côté client
-    if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
+     if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
       setError('Tous les champs obligatoires doivent être remplis');
       return;
     }
@@ -70,8 +69,7 @@ const Signup = () => {
       
       alert(res.data.message || 'Inscription réussie !');
       
-      // STOCKER TOUTES LES INFORMATIONS UTILISATEUR
-      if (res.data.userId) {
+       if (res.data.userId) {
         localStorage.setItem('userId', res.data.userId);
         localStorage.setItem('userEmail', res.data.email);
         localStorage.setItem('username', res.data.username);
@@ -103,8 +101,7 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-gray-50">
-      {/* Left Panel */}
-      <div className="w-full md:w-1/2 bg-gradient-to-br from-purple-700 to-indigo-900 flex flex-col items-center justify-center p-8 text-white">
+       <div className="w-full md:w-1/2 bg-gradient-to-br from-purple-700 to-indigo-900 flex flex-col items-center justify-center p-8 text-white">
         <h3 className="text-2xl font-bold mb-10">CodeSquid</h3>
         <div className="w-64 h-64 bg-purple-500 rounded-full mb-10 flex items-center justify-center text-6xl">🐙</div>
         <h3 className="text-2xl font-semibold mb-4 text-center">
@@ -115,8 +112,7 @@ const Signup = () => {
         </p>
       </div>
 
-      {/* Right Panel */}
-      <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-8">
+       <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-8">
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
           Sign Up & Take Control of Your Finances
         </h2>

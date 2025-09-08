@@ -1,4 +1,3 @@
-// src/models/User.js
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../config/database");
 
@@ -24,11 +23,11 @@ User.init(
       },
     },
     password_hash: {
-      type: DataTypes.STRING(255), // pour stocker le hash bcrypt
+      type: DataTypes.STRING(255), 
       allowNull: false,
     },
     profile_url: {
-      type: DataTypes.TEXT, // plus flexible que varchar(50)
+      type: DataTypes.TEXT, 
       allowNull: true,
     },
   },
@@ -36,7 +35,7 @@ User.init(
     sequelize,
     modelName: "User",
     tableName: "users",
-    timestamps: true, // ajoute createdAt / updatedAt
+    timestamps: true, 
   }
 );
 

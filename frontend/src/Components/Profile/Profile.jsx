@@ -25,7 +25,7 @@ const Profile = () => {
                         Authorization: `Bearer ${token}`
                     }
                 });
-                setProfile(res.data); // Correction: res.data au lieu de res.date
+                setProfile(res.data); 
             } catch (err) {
                 console.error('Profile fetch error:', err);
                 setError('Failed to fetch profile');
@@ -66,13 +66,13 @@ const Profile = () => {
           )}
           
           {profile && (
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex items-center mb-6">
+            <div className=" rounded-lg shadow-lg p-6 mt-[10vh] bg-purple-400">
+              <div className="flex flex-col items-center text-center mb-6 gap-[2rem] mt-[5v] p-[35px] rounded-lg bg-purple-500">
                 {profile.profileUrl ? (
                   <img 
                     src={`http://localhost:5000${profile.profileUrl}`} 
                     alt="Profile" 
-                    className="w-24 h-24 rounded-full object-cover border-2 border-purple-200"
+                    className=" w-[14rem] h-[14rem] ml-[20px] rounded-full object-cover border-2 border-purple-900 p-[5px]"
                   />
                 ) : (
                   <div className="w-24 h-24 rounded-full bg-purple-100 flex items-center justify-center text-4xl text-purple-500">
@@ -80,22 +80,18 @@ const Profile = () => {
                   </div>
                 )}
                 <div className="ml-6">
-                  <h3 className="text-xl font-semibold text-gray-800">{profile.username}</h3>
-                  <p className="text-gray-600">{profile.email}</p>
+                  <h3 className="text-xl font-semibold text-gray-800 text-[28px]">{profile.username}</h3>
+                  <p className="text-gray-200">{profile.email}</p>
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h4 className="font-medium text-gray-700 mb-2">Account Information</h4>
-                   <p><strong>Email :</strong> {profile.email}</p>
-                  <p><strong>Username : </strong> {profile.username}</p>
+              <div className=" gap-4 ml-[8vw] w-[15vw]">
+                <div className="bg-purple-500 p-4 rounded-lg">
+                  <h4 className="font-medium text-white mb-2">Account Information</h4>
+                   <p className="text-white font-bold"><strong>Email :</strong> <strong className="text-gray-800">{profile.email} </strong></p>
+                  <p className="text-white font-bold"><strong>Username : </strong> <strong className="text-gray-800">{profile.username}</strong></p>
                 </div>
                 
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h4 className="font-medium text-gray-700 mb-2">Profile Status</h4>
-                   <p><strong>Account Created : </strong> {new Date().toLocaleDateString()}</p>
-                </div>
               </div>
             </div>
           )}
