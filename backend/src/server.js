@@ -6,15 +6,15 @@ import cors from 'cors';
 import authRoutes from './routes/auth.js';
 import usersRoutes from './routes/users.js';
 import dashboardRoutes from './routes/dashboard.js';
-import expenseRoutes from './routes/expenseRoute.js'; // 👈 ajouté
+import expenseRoutes from './routes/expenseRoute.js'; // Import correct
+import categoryRoutes from './routes/categoryRoutes.js'; // Import des catégories
 import { handleUploadError } from './utils/upload.js';
-import expenseRoutes from './routes/expenseRoute.js';
-import categoryRoutes from './routes/categoryRoutes.js';
+
 const app = express();
 
 // Configuration CORS
 app.use(cors({ 
-  origin: 'http://localhost:5173',
+  origin: ['http://localhost:5173', 'http://localhost:5000'],
   credentials: true 
 }));
 app.use(express.json());
@@ -27,8 +27,10 @@ app.use('/uploads', express.static('uploads'));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/dashboard', dashboardRoutes);
-app.use('/api/expenses', expenseRoutes); // 👈 ajouté
-app.use('/api/categories', categoryRoutes);// Middleware de gestion d'erreurs
+app.use('/api/expenses', expenseRoutes); // Utilisation correcte
+app.use('/api/categories', categoryRoutes); // Routes des catégories
+
+// Middleware de gestion d'erreurs
 app.use(handleUploadError);
 
 // Gestionnaire d'erreurs global
