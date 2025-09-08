@@ -1,4 +1,3 @@
-// src/components/Content.jsx
 import React, { useEffect, useState } from 'react';
 import { Pie, Bar } from 'react-chartjs-2';
 import {
@@ -52,15 +51,13 @@ const Content = ({ className }) => {
           API.get('/api/dashboard/bar-chart'),
         ]);
 
-        // Validate and set stats
-        setStats({
+         setStats({
           totalIncome: Number(statsResponse.data.totalIncome) || 0,
           totalExpenses: Number(statsResponse.data.totalExpenses) || 0,
           remainingBalance: Number(statsResponse.data.remainingBalance) || 0,
         });
 
-        // Validate and set pie chart data
-        if (
+         if (
           pieResponse.data &&
           Array.isArray(pieResponse.data.labels) &&
           pieResponse.data.labels.length > 0 &&
@@ -79,8 +76,7 @@ const Content = ({ className }) => {
           });
         }
 
-        // Validate and set bar chart data
-        if (
+         if (
           barResponse.data &&
           Array.isArray(barResponse.data.labels) &&
           barResponse.data.labels.length > 0 &&
@@ -104,7 +100,7 @@ const Content = ({ className }) => {
         let errorMsg = 'Failed to load dashboard data';
         if (err.response?.data?.message === 'Token invalide') {
           errorMsg = 'Session expired. Please sign in again.';
-          localStorage.removeItem('token'); // Clear invalid token
+          localStorage.removeItem('token'); 
         }
         setError(errorMsg);
         setStats({

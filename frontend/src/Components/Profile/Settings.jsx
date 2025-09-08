@@ -48,8 +48,7 @@ const Settings = () => {
                 profile: file
             });
             
-            // Create preview
-            if (file) {
+             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     setPreviewImage(e.target.result);
@@ -94,8 +93,7 @@ const Settings = () => {
             setCurrentProfile(res.data.profileUrl || '');
             setPreviewImage('');
             
-            // Update local storage if email changed
-            if (res.data.email) {
+             if (res.data.email) {
                 localStorage.setItem('userEmail', res.data.email);
             }
             
@@ -122,9 +120,9 @@ const Settings = () => {
     return (
     <div className="flex flex-col h-screen w-full">
         <Header/>
-      <div className="flex flex-1 min-h-0"> 
+      <div className="flex flex-1 min-h-0 "> 
             <Sidebar/>
-        <div className="container mx-auto mt-8 p-4 max-w-2xl">
+        <div className="container mx-auto w-[86vw] mt-[15vh] p-4 max-w-2xl ">
             <h2 className="text-2xl font-bold mb-6 text-gray-800">Account Settings</h2>
             
             {message && (
@@ -140,8 +138,7 @@ const Settings = () => {
             )}
 
             <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6">
-                {/* Profile Picture Section */}
-                <div className="mb-6">
+                 <div className="mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                         Profile Picture
                     </label>
@@ -155,7 +152,7 @@ const Settings = () => {
                                     className="w-20 h-20 rounded-full object-cover border-2 border-purple-200"
                                 />
                             ) : (
-                                <div className="w-20 h-20 rounded-full bg-purple-100 flex items-center justify-center text-2xl text-purple-500">
+                                <div className="w-20 h-20 rounded-full bg-purple-800 flex items-center justify-center text-2xl text-purple-500">
                                     {userData.username?.charAt(0).toUpperCase() || 'U'}
                                 </div>
                             )}
@@ -192,8 +189,7 @@ const Settings = () => {
                     </div>
                 </div>
 
-                {/* Username Field */}
-                <div className="mb-4">
+                 <div className="mb-4">
                     <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
                         Username *
                     </label>
@@ -208,8 +204,7 @@ const Settings = () => {
                     />
                 </div>
 
-                {/* Email Field */}
-                <div className="mb-6">
+                 <div className="mb-6">
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                         Email Address *
                     </label>
@@ -224,8 +219,7 @@ const Settings = () => {
                     />
                 </div>
 
-                {/* Password Section (Optional) */}
-                <div className="mb-6">
+                 <div className="mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                         Change Password (Optional)
                     </label>
@@ -234,13 +228,13 @@ const Settings = () => {
                             type="password"
                             placeholder="New password"
                             className="w-full border border-gray-300 rounded-lg py-2 px-3 outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                            disabled
+                            required
                         />
                         <input
                             type="password"
                             placeholder="Confirm new password"
                             className="w-full border border-gray-300 rounded-lg py-2 px-3 outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                            disabled
+                            required
                         />
                     </div>
                     <p className="text-sm text-gray-500 mt-2">
@@ -269,20 +263,6 @@ const Settings = () => {
                 </div>
             </form>
 
-            {/* Account Status Section */}
-            <div className="bg-white rounded-lg shadow-md p-6 mt-6">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Account Status</h3>
-                <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                        <span className="text-gray-600">Account created</span>
-                        <span className="text-gray-800">{new Date().toLocaleDateString()}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                        <span className="text-gray-600">Status</span>
-                        <span className="text-green-600 font-medium">Active</span>
-                    </div>
-                </div>
-            </div>
         </div>
         </div>
         </div>

@@ -1,4 +1,3 @@
-// Dashboard.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
@@ -20,16 +19,14 @@ const Dashboard = () => {
       }
 
       try {
-        // Vérifiez que le token est toujours valide
-        const userData = {
+         const userData = {
           id: localStorage.getItem("userId"),
           email: localStorage.getItem("userEmail"),
           username: localStorage.getItem("username"),
         };
         
         if (!userData.id || !userData.email) {
-          // Si les données utilisateur sont manquantes, essayez de les récupérer
-          const response = await API.get('/users/me');
+           const response = await API.get('/users/me');
           const userInfo = response.data;
           
           localStorage.setItem('userId', userInfo.id);
@@ -63,11 +60,9 @@ const Dashboard = () => {
 
   return (
     <div className="flex flex-col h-screen w-full bg-gray-100">
-      {/* Header en haut */}
-      <Header className="flex-none" />
+       <Header className="flex-none" />
 
-      {/* Zone principale : Sidebar à gauche, Content à droite */}
-      <div className="flex flex-1 min-h-0 gap-[15rem]"> 
+       <div className="flex flex-1 min-h-0 gap-[15rem]"> 
         <Sidebar className="w-64 h-full" />
         <Content className="flex-1 h-full overflow-auto" />
       </div>

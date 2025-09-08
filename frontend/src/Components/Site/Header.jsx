@@ -1,23 +1,29 @@
-// Header.jsx
 import { LogOut, Bell, Moon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import API from '../../api/axios';
 
 const Header = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
 
   useEffect(() => {
-    // Récupérez le username depuis le localStorage
     const storedUsername = localStorage.getItem('username');
     if (storedUsername) {
       setUsername(storedUsername);
     }
   }, []);
 
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate('/signin');
+  const handleLogout = async () => {
+     try{
+      await API.post('/auth/logout');
+     } catch(err) {
+      console.error('Erreur lors de la déconnexion :', err);
+      
+     }finally {
+      localStorage.clear();
+      navigate('/signin')
+     }
   };
 
   return (

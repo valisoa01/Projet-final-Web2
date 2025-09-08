@@ -1,4 +1,3 @@
-// src/controllers/dashboard.js
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -8,20 +7,17 @@ const dashboardController = {
     try {
       const userId = req.user.id;
 
-      // Fetch total income for the logged-in user
-      const totalIncome = await prisma.incomes.aggregate({
+       const totalIncome = await prisma.incomes.aggregate({
         where: { UserId: userId },
         _sum: { amount: true },
       }).then(r => Number(r._sum.amount) || 0);
 
-      // Fetch total expenses for the logged-in user
-      const totalExpenses = await prisma.expenses.aggregate({
+       const totalExpenses = await prisma.expenses.aggregate({
         where: { UserId: userId },
         _sum: { amount: true },
       }).then(r => Number(r._sum.amount) || 0);
 
-      // Calculate remaining balance
-      const remainingBalance = totalIncome - totalExpenses;
+       const remainingBalance = totalIncome - totalExpenses;
 
       const stats = {
         totalIncome,
@@ -42,7 +38,6 @@ const dashboardController = {
     try {
       const userId = req.user.id;
 
-      // Fetch expenses with their categories using select
       const expensesWithCategories = await prisma.expenses.findMany({
         where: { UserId: userId },
         select: {
@@ -55,7 +50,6 @@ const dashboardController = {
         },
       });
 
-      // Group and sum amounts by category name in JavaScript
       const categoryMap = {};
       expensesWithCategories.forEach(expense => {
         const categoryName = expense.Categories?.name || 'Unknown';
@@ -70,7 +64,7 @@ const dashboardController = {
           name,
           amount,
         }))
-        .filter(c => c.amount > 0); // Exclude categories with zero amount
+        .filter(c => c.amount > 0); 
 
       const pieChartData = {
         labels: categoryData.length > 0 ? categoryData.map(c => c.name) : ['No expenses yet'],
@@ -96,7 +90,6 @@ const dashboardController = {
     try {
       const userId = req.user.id;
 
-      // Get expenses for the last 6 months for the logged-in user
       const sixMonthsAgo = new Date();
       sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
@@ -112,7 +105,6 @@ const dashboardController = {
         },
       });
 
-      // Group by month
       const monthlyData = {};
       expenses.forEach(expense => {
         const date = new Date(expense.date);
@@ -123,7 +115,6 @@ const dashboardController = {
         monthlyData[monthYear] += Number(expense.amount);
       });
 
-      // Format for chart
       const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       const sortedMonths = Object.keys(monthlyData).sort();
 
