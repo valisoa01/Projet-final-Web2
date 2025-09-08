@@ -1,11 +1,15 @@
 // server.js
+import dotenv from 'dotenv';
+dotenv.config();
 import express from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth.js';
 import usersRoutes from './routes/users.js';
-import dashboardRoutes from './routes/dashboard.js'; // ← Ajoutez cette ligne
+import dashboardRoutes from './routes/dashboard.js';
+import expenseRoutes from './routes/expenseRoute.js'; // 👈 ajouté
 import { handleUploadError } from './utils/upload.js';
-
+import expenseRoutes from './routes/expenseRoute.js';
+import categoryRoutes from './routes/categoryRoutes.js';
 const app = express();
 
 // Configuration CORS
@@ -22,9 +26,9 @@ app.use('/uploads', express.static('uploads'));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
-app.use('/api/dashboard', dashboardRoutes); // ← Ajoutez cette ligne
-
-// Middleware de gestion d'erreurs
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/expenses', expenseRoutes); // 👈 ajouté
+app.use('/api/categories', categoryRoutes);// Middleware de gestion d'erreurs
 app.use(handleUploadError);
 
 // Gestionnaire d'erreurs global
@@ -39,4 +43,4 @@ app.use('*', (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

@@ -6,6 +6,7 @@ import Signin from './Components/Auth/Signin';
 import Dashboard from './Components/Site/Dashboard';
 import Profile from './Components/Profile/Profile';
 import Settings from './Components/Profile/Settings';
+import Expense from './Components/Site/Expense';
 function App() {
   return (
     <Routes>
@@ -18,6 +19,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} /> 
       <Route path="/profile" element={<Profile/>} />
       <Route path="/settings" element={<Settings/>} />
+      <Route path="/expense" element={<Expense/>} />
     </Routes>
   );
 }
