@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import Content from "./Content";
+import ContentIncomes from "./ContentIncomes";
+import Content from "./Content"
 
 const Incomes = () => {
     return (
@@ -13,7 +14,7 @@ const Incomes = () => {
       {/* Zone principale : Sidebar à gauche, Content à droite */}
       <div className="flex flex-1 min-h-0 gap-[15rem]"> 
         <Sidebar className="w-64 h-full" />
-        <Content className="flex-1 h-full overflow-auto" />
+        <ContentIncomes className="flex-1 h-full overflow-auto" />
       </div>
     </div>
   );
