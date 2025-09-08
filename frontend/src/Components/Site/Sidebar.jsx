@@ -66,7 +66,7 @@ const Sidebar = () => {
               </li>
               <li>
                 <button
-                  onClick={() => navigate('/expenses')}
+                onClick={() => navigate('/expense')}
                   className="flex items-center gap-3 p-3 text-gray-700 hover:bg-purple-50 hover:text-purple-600 rounded-lg transition-colors duration-200 w-full text-left"
                 >
                   <Wallet className="w-5 h-5 text-gray-600 group-hover:text-purple-600" />
