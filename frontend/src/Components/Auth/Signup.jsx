@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Mail, Lock, Eye, EyeOff, Upload, Check, AlertCircle, Sparkles, Github, Coffee, ShoppingCart, Car, Home } from 'lucide-react';
+import { User, Mail, Lock, Eye, EyeOff, Check, AlertCircle, Coffee, ShoppingCart, Car, Home } from 'lucide-react';
 import API from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -78,16 +78,18 @@ const Signup = () => {
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-indigo-900 via-indigo-800 to-indigo-700 relative overflow-hidden">
       
-      {/* Floating shapes */}
-      <div className="absolute inset-0">
-        <div className="absolute top-10 left-10 w-20 h-20 bg-indigo-500 rounded-full opacity-20 animate-rotateOscillate"></div>
-        <div className="absolute top-32 right-20 w-16 h-16 bg-indigo-400 rounded-full opacity-25 animate-floatDiagonal"></div>
-        <div className="absolute bottom-20 left-20 w-12 h-12 bg-indigo-600 rounded-full opacity-30 animate-pulseSlow"></div>
-        <div className="absolute bottom-40 right-16 w-8 h-8 bg-indigo-500 rounded-full opacity-40 animate-rotateOscillate"></div>
+      {/* Animated circles behind everything */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-10 left-10 w-20 h-20 bg-cyan-400/30 rounded-full animate-bounceSlow"></div>
+        <div className="absolute top-32 right-20 w-16 h-16 bg-cyan-500/25 rounded-full animate-pingSlow"></div>
+        <div className="absolute bottom-20 left-20 w-12 h-12 bg-cyan-300/20 rounded-full animate-pulseSlow"></div>
+        <div className="absolute bottom-40 right-16 w-8 h-8 bg-cyan-400/30 rounded-full animate-bounceSlow"></div>
+        <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-cyan-300/20 rounded-full animate-spinSlow"></div>
+        <div className="absolute bottom-1/3 right-1/4 w-28 h-28 bg-cyan-500/15 rounded-full animate-spinReverse"></div>
       </div>
 
       {/* Left Side: Floating Cards */}
-      <div className="hidden lg:flex lg:w-1/2 flex-col justify-center items-center gap-6 p-12 relative">
+      <div className="hidden lg:flex lg:w-1/2 flex-col justify-center items-center gap-6 p-12 relative z-10">
         <h2 className="text-4xl font-bold text-cyan-300 mb-6">Track Your Expenses</h2>
         <div className="grid grid-cols-2 gap-6">
           {cards.map((c, idx) => (
