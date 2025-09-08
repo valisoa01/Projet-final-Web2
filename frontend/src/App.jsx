@@ -10,9 +10,7 @@ import Expense from './Components/Site/Expense';
 function App() {
   return (
     <Routes>
-      {/* Route par défaut : redirige "/" vers "/login" */}
       <Route path="/" element={<Navigate to="/Signin" replace />} />
-
       <Route path="/signup" element={<Signup />} />
       <Route path="/Signin" element={<Signin />} />
       <Route path="/home" element={<Home />} />
@@ -20,6 +18,7 @@ function App() {
       <Route path="/profile" element={<Profile/>} />
       <Route path="/settings" element={<Settings/>} />
       <Route path="/expense" element={<Expense/>} />
+
     </Routes>
   );
 }

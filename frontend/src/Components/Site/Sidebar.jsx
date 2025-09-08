@@ -1,4 +1,3 @@
-// Sidebar.jsx (version simplifiée)
 import { Home, Wallet, Briefcase, User, Settings } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -10,7 +9,6 @@ const Sidebar = () => {
   const [profileUrl, setProfileUrl] = useState('');
 
   useEffect(() => {
-    // Récupérez les données utilisateur depuis le localStorage
     const storedUsername = localStorage.getItem('username');
     const storedEmail = localStorage.getItem('userEmail');
     const storedProfileUrl = localStorage.getItem('profileUrl');
@@ -20,8 +18,7 @@ const Sidebar = () => {
     if (storedProfileUrl) setProfileUrl(storedProfileUrl);
   }, []);
 
-  // Fonction pour générer des initiales si pas de photo
-  const getInitials = (name) => {
+   const getInitials = (name) => {
     if (!name) return 'U';
     return name.charAt(0).toUpperCase();
   };
@@ -29,10 +26,8 @@ const Sidebar = () => {
   return (
     <div>
       <aside className="w-64 h-[90%] bg-white shadow-lg flex flex-col justify-between transition-all duration-300 fixed mt-[11vh]">
-        {/* Partie haute */}
-        <div>
-          {/* Profil utilisateur */}
-          <div className="flex items-center gap-3 p-4 border-b border-purple-100">
+         <div>
+           <div className="flex items-center gap-3 p-4 border-b border-purple-100">
             <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold ring-2 ring-purple-200 overflow-hidden">
               {profileUrl ? (
                 <img 
@@ -40,8 +35,7 @@ const Sidebar = () => {
                   alt="Profile" 
                   className="w-full h-full object-cover"
                   onError={(e) => {
-                    // Fallback aux initiales si l'image ne charge pas
-                    e.target.style.display = 'none';
+                     e.target.style.display = 'none';
                   }}
                 />
               ) : (
@@ -59,8 +53,7 @@ const Sidebar = () => {
             </button>
           </div>
 
-          {/* Menu principal */}
-          <nav className="mt-6 px-2">
+           <nav className="mt-6 px-2">
             <ul className="space-y-1">
               <li>
                 <button
@@ -93,8 +86,7 @@ const Sidebar = () => {
           </nav>
         </div>
 
-        {/* Partie basse */}
-        <div className="p-4 border-t border-purple-100">
+         <div className="p-4 border-t border-purple-100">
           <ul className="space-y-1">
             <li>
               <button  
