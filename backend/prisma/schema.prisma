@@ -33,19 +33,19 @@ model Categories {
 
 model Expenses {
   id          Int         @id @default(autoincrement())
-  amount      Decimal?    @db.Decimal
-  date        DateTime?   @db.Timestamptz(6)
-  description String?     @db.VarChar(255)
-  type        String?     @db.VarChar(255)
-  receipt     String?     @db.VarChar(255)
-  categoryId  Int?
-  userId      Int?
+  amount      Decimal     @db.Decimal
+  date        DateTime    @db.Timestamptz(6)
+  description String      @db.VarChar(255)
+  type        String?     @db.VarChar(255)  // one-time or recurring
+  receipt     String?     @db.VarChar(255)  // URL du receipt uploadé
+  categoryId  Int
+  userId      Int
+  recurring   Boolean     @default(false)   // Nouveau : si récurrente
+  frequency   String?     @db.VarChar(50)   // Nouveau : weekly, monthly, etc.
   createdAt   DateTime    @db.Timestamptz(6)
   updatedAt   DateTime    @db.Timestamptz(6)
-  UserId      Int?
-  CategoryId  Int?
-  Categories  Categories? @relation(fields: [CategoryId], references: [id])
-  Users       Users?      @relation(fields: [UserId], references: [id])
+  Categories  Categories  @relation(fields: [categoryId], references: [id])
+  Users       Users       @relation(fields: [userId], references: [id])
 }
 
 model Incomes {
