@@ -2,14 +2,12 @@ import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
 
-// Ensure uploads directory exists
 const uploadDir = 'uploads/';
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
+ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadDir);
   },
@@ -20,8 +18,7 @@ const storage = multer.diskStorage({
   },
 });
 
-// File filter for image uploads
-const fileFilter = (req, file, cb) => {
+  const fileFilter = (req, file, cb) => {
   const allowedTypes = /jpeg|jpg|png|gif/;
   const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
   const mimetype = allowedTypes.test(file.mimetype);
@@ -37,13 +34,12 @@ const upload = multer({
   storage,
   fileFilter,
   limits: { 
-    fileSize: 5 * 1024 * 1024, // 5MB limit
-    files: 1 // Only one file
+    fileSize: 5 * 1024 * 1024, 
+    files: 1 
   },
 });
 
-// Middleware pour gérer les erreurs multer
-export const handleUploadError = (err, req, res, next) => {
+ export const handleUploadError = (err, req, res, next) => {
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
       return res.status(400).json({ message: 'Le fichier est trop volumineux (max 5MB)' });

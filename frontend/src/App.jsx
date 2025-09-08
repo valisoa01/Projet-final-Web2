@@ -9,15 +9,14 @@ import Settings from './Components/Profile/Settings';
 function App() {
   return (
     <Routes>
-      {/* Route par défaut : redirige "/" vers "/login" */}
       <Route path="/" element={<Navigate to="/Signin" replace />} />
-
       <Route path="/signup" element={<Signup />} />
       <Route path="/Signin" element={<Signin />} />
       <Route path="/home" element={<Home />} />
       <Route path="/dashboard" element={<Dashboard />} /> 
       <Route path="/profile" element={<Profile/>} />
       <Route path="/settings" element={<Settings/>} />
+      
     </Routes>
   );
 }

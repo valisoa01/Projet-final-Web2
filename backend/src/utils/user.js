@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     username: DataTypes.STRING(50),
     email: DataTypes.STRING(100),
     password_hash: DataTypes.STRING(255),
-    profileUrl: DataTypes.TEXT // Allow null by default
+    profileUrl: DataTypes.TEXT 
   }, {
     tableName: 'users',
     timestamps: true
