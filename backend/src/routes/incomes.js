@@ -26,10 +26,10 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST /api/incomes/test - Créer un nouveau revenu (simplifié pour test)
+// POST /api/incomes/test - Créer un nouveau revenu
 router.post('/test', async (req, res) => {
   try {
-    const { amount, date, UserId } = req.body;
+    const { amount, date, type, description, UserId } = req.body;
 
     if (!amount || !date || !UserId) {
       return res.status(400).json({ message: 'Amount, date, and UserId are required' });
@@ -46,10 +46,13 @@ router.post('/test', async (req, res) => {
     // Conversion sécurisée du montant
     const incomeAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
 
+    // Création du revenu
     const income = await prisma.Incomes.create({
       data: {
         amount: incomeAmount,
         date: new Date(date),
+        type: type || null,
+        description: description || null,
         UserId: Number(UserId),
       },
       include: {
@@ -65,8 +68,8 @@ router.post('/test', async (req, res) => {
 
     res.status(201).json(income);
   } catch (error) {
-    console.error('Error creating income test:', error);
-    res.status(500).json({ message: 'Erreur lors de la création du revenu (test)', details: error.message });
+    console.error('Error creating income:', error);
+    res.status(500).json({ message: 'Erreur lors de la création du revenu', details: error.message });
   }
 });
 
