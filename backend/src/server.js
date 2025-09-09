@@ -1,12 +1,13 @@
- // server.js
+// server.js (parties modifiées)
 import dotenv from "dotenv";
-dotenv.config(); // ← Charge les variables d'environnement
+dotenv.config();
 
 import express from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth.js';
 import usersRoutes from './routes/users.js';
 import dashboardRoutes from './routes/dashboard.js';
+import incomesRoutes from './routes/incomes.js'; // ← Nouvelle importation
 import { handleUploadError } from './utils/upload.js';
 
 const app = express();
@@ -26,6 +27,7 @@ app.use('/uploads', express.static('uploads'));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/incomes', incomesRoutes); // ← Nouvelle route
 
 // Middleware de gestion d'erreurs
 app.use(handleUploadError);
@@ -35,6 +37,11 @@ app.use((err, req, res, next) => {
   console.error('Global error handler:', err);
   res.status(500).json({ message: 'Erreur serveur interne' });
 });
+
+app.get('/api/incomes/test-route', (req, res) => {
+  res.json({ message: 'Route test fonctionne' });
+});
+
 
 // Route 404
 app.use('*', (req, res) => {
