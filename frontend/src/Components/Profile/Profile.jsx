@@ -8,7 +8,6 @@ const Profile = () => {
   const [profile, setProfile] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -37,17 +36,6 @@ const Profile = () => {
     fetchProfile();
   }, []);
 
-  const handleLogout = async () => {
-    try {
-      await API.post('/auth/logout');
-    } catch (err) {
-      console.error("Error during logout:", err);
-    } finally {
-      localStorage.clear();
-      window.location.href = "/signin";
-    }
-  };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -61,8 +49,8 @@ const Profile = () => {
       <Header />
       <div className="flex flex-1 min-h-0">
         <Sidebar />
-
-        {/* Profile Section */}
+        
+        {/* Zone de profil centrée mais décalée vers la droite */}
         <div className="flex-1 flex justify-start items-center p-6 overflow-auto ml-[15vw]">
           {error && (
             <div className="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-400 rounded-lg p-4 mb-4 w-full max-w-5xl">
@@ -73,7 +61,7 @@ const Profile = () => {
           {profile && (
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg w-full max-w-5xl flex hover:shadow-2xl transition-shadow duration-300 ml-20">
               
-              {/* Profile Picture */}
+              {/* Photo de profil et statut */}
               <div className="flex-none w-1/3 p-6 flex flex-col items-center justify-center bg-cyan-50 dark:bg-cyan-900 rounded-l-xl gap-4">
                 {profile.profileUrl ? (
                   <img
@@ -92,7 +80,7 @@ const Profile = () => {
                 </div>
               </div>
 
-              {/* User Info */}
+              {/* Informations utilisateur */}
               <div className="flex-1 p-6 flex flex-col justify-center gap-6">
                 <h2 className="text-3xl font-bold text-gray-800 dark:text-white">{profile.username}</h2>
                 <p className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
@@ -126,7 +114,7 @@ const Profile = () => {
                     <Edit3 className="w-5 h-5"/> Edit Profile
                   </button>
                   <button 
-                    onClick={() => setShowLogoutConfirm(true)} 
+                    onClick={() => { localStorage.clear(); window.location.href='/signin'; }} 
                     className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all"
                   >
                     <LogOut className="w-5 h-5"/> Logout
@@ -141,31 +129,6 @@ const Profile = () => {
           )}
         </div>
       </div>
-
-      {/* 🔹 Logout Confirmation Modal */}
-      {showLogoutConfirm && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 w-80">
-            <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
-              Are you sure you want to log out?
-            </h2>
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => setShowLogoutConfirm(false)}
-                className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white"
-              >
-                No
-              </button>
-              <button
-                onClick={handleLogout}
-                className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white"
-              >
-                Yes
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

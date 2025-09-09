@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import API from "../../api/axios";
 import Header from "../Site/Header";
 import Sidebar from "../Site/Sidebar";
-import { Camera } from "lucide-react"; // <-- icône caméra
+import { Camera } from "lucide-react"; 
 
 const Settings = () => {
   const [userData, setUserData] = useState({
