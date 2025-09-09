@@ -18,98 +18,94 @@ const Sidebar = () => {
     if (storedProfileUrl) setProfileUrl(storedProfileUrl);
   }, []);
 
-   const getInitials = (name) => {
+  const getInitials = (name) => {
     if (!name) return 'U';
     return name.charAt(0).toUpperCase();
   };
 
   return (
-    <div>
-      <aside className="w-64 h-[90%] bg-white shadow-lg flex flex-col justify-between transition-all duration-300 fixed mt-[11vh]">
-         <div>
-           <div className="flex items-center gap-3 p-4 border-b border-purple-100">
-            <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold ring-2 ring-purple-200 overflow-hidden">
-              {profileUrl ? (
-                <img 
-                  src={`http://localhost:5000${profileUrl}`} 
-                  alt="Profile" 
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                     e.target.style.display = 'none';
-                  }}
-                />
-              ) : (
-                <span>{getInitials(username)}</span>
-              )}
-            </div>
-            
-            <div>
-              <h2 className="font-semibold text-gray-800 text-sm">{username || 'Utilisateur'}</h2>
-              <p className="text-xs text-gray-500">{userEmail || ''}</p>
-            </div>
-            
-            <button className="ml-auto text-purple-500 hover:text-purple-700 transition-colors">
-              ⋮
-            </button>
+    <aside className="w-64 h-[90vh] fixed top-[10vh] left-0 bg-white dark:bg-gray-900 shadow-xl flex flex-col justify-between z-40 transition-colors duration-300">
+      
+      {/* User profile */}
+      <div>
+        <div className="flex items-center gap-3 p-5 border-b border-gray-200 dark:border-gray-700">
+          <div className="w-12 h-12 rounded-full bg-cyan-500 flex items-center justify-center text-white font-bold ring-2 ring-cyan-300/30 overflow-hidden shadow-md">
+            {profileUrl ? (
+              <img 
+                src={`http://localhost:5000${profileUrl}`} 
+                alt="Profile" 
+                className="w-full h-full object-cover"
+                onError={(e) => { e.target.style.display = 'none'; }}
+              />
+            ) : (
+              <span>{getInitials(username)}</span>
+            )}
           </div>
-
-           <nav className="mt-6 px-2">
-            <ul className="space-y-1">
-              <li>
-                <button
-                  onClick={() => navigate('/dashboard')}
-                  className="flex items-center gap-3 p-3 text-purple-600 bg-purple-50 rounded-lg font-medium hover:bg-purple-100 transition-colors duration-200 w-full text-left"
-                >
-                  <Home className="w-5 h-5 text-purple-600" />
-                  Dashboard
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => navigate('/expenses')}
-                  className="flex items-center gap-3 p-3 text-gray-700 hover:bg-purple-50 hover:text-purple-600 rounded-lg transition-colors duration-200 w-full text-left"
-                >
-                  <Wallet className="w-5 h-5 text-gray-600 group-hover:text-purple-600" />
-                  Expenses
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => navigate('/incomes')}
-                  className="flex items-center gap-3 p-3 text-gray-700 hover:bg-purple-50 hover:text-purple-600 rounded-lg transition-colors duration-200 w-full text-left"
-                >
-                  <Briefcase className="w-5 h-5 text-gray-600 group-hover:text-purple-600" />
-                  Incomes
-                </button>
-              </li>
-            </ul>
-          </nav>
+          
+          <div>
+            <h2 className="font-semibold text-gray-800 dark:text-white text-sm">{username || 'User'}</h2>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{userEmail || ''}</p>
+          </div>
         </div>
 
-         <div className="p-4 border-t border-purple-100">
-          <ul className="space-y-1">
+        {/* Navigation */}
+        <nav className="mt-6 px-3">
+          <ul className="space-y-2">
             <li>
-              <button  
-                onClick={() => navigate('/profile')}
-                className="flex items-center gap-3 text-gray-700 hover:bg-purple-50 hover:text-purple-600 p-3 rounded-lg transition-colors duration-200 w-full text-left"
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="flex items-center gap-3 p-3 text-gray-800 dark:text-white hover:bg-cyan-100 dark:hover:bg-cyan-700/30 rounded-xl transition-all duration-300 w-full text-left"
               >
-                <User className="w-5 h-5 text-gray-600 group-hover:text-purple-600" />
-                Profile
+                <Home className="w-5 h-5 text-cyan-500" />
+                Dashboard
               </button>
             </li>
             <li>
-              <button 
-                onClick={() => navigate('/settings')}
-                className="flex items-center gap-3 text-gray-700 hover:bg-purple-50 hover:text-purple-600 p-3 rounded-lg transition-colors duration-200 w-full text-left"
+              <button
+                onClick={() => navigate('/expenses')}
+                className="flex items-center gap-3 p-3 text-gray-700 dark:text-gray-300 hover:bg-cyan-100 dark:hover:bg-cyan-700/30 rounded-xl transition-all duration-300 w-full text-left"
               >
-                <Settings className="w-5 h-5 text-gray-600 group-hover:text-purple-600" />
-                Settings
+                <Wallet className="w-5 h-5 text-cyan-400" />
+                Expenses
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => navigate('/incomes')}
+                className="flex items-center gap-3 p-3 text-gray-700 dark:text-gray-300 hover:bg-cyan-100 dark:hover:bg-cyan-700/30 rounded-xl transition-all duration-300 w-full text-left"
+              >
+                <Briefcase className="w-5 h-5 text-cyan-400" />
+                Incomes
               </button>
             </li>
           </ul>
-        </div>
-      </aside>
-    </div>
+        </nav>
+      </div>
+
+      {/* Bottom links */}
+      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+        <ul className="space-y-2">
+          <li>
+            <button  
+              onClick={() => navigate('/profile')}
+              className="flex items-center gap-3 text-gray-700 dark:text-gray-300 hover:bg-cyan-100 dark:hover:bg-cyan-700/30 p-3 rounded-xl transition-all duration-300 w-full text-left"
+            >
+              <User className="w-5 h-5 text-cyan-400" />
+              Profile
+            </button>
+          </li>
+          <li>
+            <button 
+              onClick={() => navigate('/settings')}
+              className="flex items-center gap-3 text-gray-700 dark:text-gray-300 hover:bg-cyan-100 dark:hover:bg-cyan-700/30 p-3 rounded-xl transition-all duration-300 w-full text-left"
+            >
+              <Settings className="w-5 h-5 text-cyan-400" />
+              Settings
+            </button>
+          </li>
+        </ul>
+      </div>
+    </aside>
   );
 };
 
