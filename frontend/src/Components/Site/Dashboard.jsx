@@ -19,14 +19,14 @@ const Dashboard = () => {
       }
 
       try {
-         const userData = {
+        const userData = {
           id: localStorage.getItem("userId"),
           email: localStorage.getItem("userEmail"),
           username: localStorage.getItem("username"),
         };
         
         if (!userData.id || !userData.email) {
-           const response = await API.get('/users/me');
+          const response = await API.get('/users/me');
           const userInfo = response.data;
           
           localStorage.setItem('userId', userInfo.id);
@@ -60,11 +60,20 @@ const Dashboard = () => {
 
   return (
     <div className="flex flex-col h-screen w-full bg-gray-100">
-       <Header className="flex-none" />
+      {/* Header fixed on top */}
+      <Header className="flex-none" />
 
-       <div className="flex flex-1 min-h-0 gap-[15rem]"> 
-        <Sidebar className="w-64 h-full" />
-        <Content className="flex-1 h-full overflow-auto" />
+      {/* Main area */}
+      <div className="flex flex-1 min-h-0">
+        {/* Sidebar with fixed width but not fixed position */}
+        <div className="w-64 flex-shrink-0">
+          <Sidebar />
+        </div>
+
+        {/* Content takes remaining space, scrollable */}
+        <div className="flex-1 h-full overflow-auto">
+          <Content />
+        </div>
       </div>
     </div>
   );
