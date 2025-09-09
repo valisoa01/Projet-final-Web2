@@ -5,7 +5,6 @@ import { getMe, updateMe, deleteMe } from '../controllers/usersController.js';
 
 const router = express.Router();
 
-// Routes protégées par authentification
 router.get('/me', auth, getMe);
 router.put('/me', auth, upload.single('profile'), updateMe);
 router.delete('/me', auth, deleteMe);

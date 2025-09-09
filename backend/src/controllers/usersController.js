@@ -5,7 +5,6 @@ import path from 'path';
 
 const prisma = new PrismaClient();
 
-// GET /me - Récupérer le profil de l'utilisateur connecté
 export const getMe = async (req, res) => {
   try {
     const user = await prisma.users.findUnique({
@@ -38,14 +37,12 @@ export const getMe = async (req, res) => {
   }
 };
 
-// PUT /me - Mettre à jour le profil de l'utilisateur
 export const updateMe = async (req, res) => {
   try {
     const { username, email, password } = req.body;
     let updateData = {};
 
-    // Validation des données
-    if (username) {
+     if (username) {
       if (username.length < 3) {
         return res.status(400).json({ message: 'Le nom d\'utilisateur doit contenir au moins 3 caractères' });
       }
@@ -67,10 +64,8 @@ export const updateMe = async (req, res) => {
       updateData.password = await bcrypt.hash(password, 10);
     }
 
-    // Gestion de l'image de profil
-    if (req.file) {
-      // Supprimer l'ancienne image si elle existe
-      const currentUser = await prisma.users.findUnique({
+     if (req.file) {
+       const currentUser = await prisma.users.findUnique({
         where: { id: req.user.id },
         select: { profile: true }
       });
@@ -85,8 +80,7 @@ export const updateMe = async (req, res) => {
       updateData.profile = `/uploads/${req.file.filename}`;
     }
 
-    // Mise à jour de l'utilisateur
-    const updatedUser = await prisma.users.update({
+     const updatedUser = await prisma.users.update({
       where: { id: req.user.id },
       data: updateData,
       select: {
@@ -123,25 +117,21 @@ export const updateMe = async (req, res) => {
   }
 };
 
-// DELETE /me - Supprimer le compte utilisateur
-export const deleteMe = async (req, res) => {
+ export const deleteMe = async (req, res) => {
   try {
-    // Récupérer l'utilisateur pour supprimer son image de profil
-    const user = await prisma.users.findUnique({
+     const user = await prisma.users.findUnique({
       where: { id: req.user.id },
       select: { profile: true }
     });
 
-    // Supprimer l'image de profil si elle existe
-    if (user.profile) {
+     if (user.profile) {
       const imagePath = path.join(process.cwd(), user.profile);
       if (fs.existsSync(imagePath)) {
         fs.unlinkSync(imagePath);
       }
     }
 
-    // Supprimer l'utilisateur
-    await prisma.users.delete({
+     await prisma.users.delete({
       where: { id: req.user.id }
     });
 
