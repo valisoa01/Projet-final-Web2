@@ -1,9 +1,9 @@
-import { Home, Wallet, Briefcase, User, Settings } from "lucide-react";
+ import { Home, Wallet, Briefcase, User, Settings } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import API from "../../api/axios";
-
-const Sidebar = () => {
+ import API from "../../api/axios";
+ 
+ const Sidebar = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
 
@@ -56,7 +56,7 @@ const Sidebar = () => {
           </div>
         </div>
 
-        {/* Navigation */}
+        {/* Menu principal */}
         <nav className="mt-6 px-3">
           <ul className="space-y-2">
             <li>
