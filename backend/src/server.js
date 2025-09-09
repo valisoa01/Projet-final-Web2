@@ -13,6 +13,7 @@ import { handleUploadError } from './utils/upload.js';
 
 const app = express();
 
+// Configuration CORS
  app.use(cookieParser());
 
 app.use(cors({ 
@@ -22,17 +23,20 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/uploads', express.static('uploads'));
 
- app.use('/api/auth', authRoutes);
+// Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/categories', categoryRoutes);
 
+// Middleware de gestion d'erreurs
 app.use(handleUploadError);
 
 app.use((err, req, res, next) => {
