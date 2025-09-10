@@ -5,120 +5,41 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 const router = express.Router();
 
-// GET /api/incomes - Récupérer tous les revenus
+// GET /api/incomes
 router.get('/', async (req, res) => {
   try {
-    const incomes = await prisma.Incomes.findMany({
-      include: {
-        Users: {
-          select: {
-            id: true,
-            username: true,
-            email: true,
-          },
-        },
-      },
+    const incomes = await prisma.incomes.findMany({
+      include: { Users: { select: { id: true, username: true, email: true } } },
     });
     res.json(incomes);
   } catch (error) {
-    console.error('Error fetching incomes:', error);
+    console.error('Erreur fetching incomes:', error);
     res.status(500).json({ message: 'Erreur lors de la récupération des revenus', details: error.message });
   }
 });
 
-// POST /api/incomes/test - Créer un nouveau revenu
-router.post('/test', async (req, res) => {
+// POST /api/incomes/new
+router.post('/new', async (req, res) => {
+  const { amount, date, type, description, userId } = req.body;
+
+  if (!userId) return res.status(400).json({ message: 'userId est requis' });
+  if (!amount || parseFloat(amount) <= 0) return res.status(400).json({ message: 'Le montant doit être positif' });
+  if (!date || isNaN(new Date(date).getTime())) return res.status(400).json({ message: 'Date invalide' });
+
   try {
-    const { amount, date, type, description, UserId } = req.body;
-
-    if (!amount || !date || !UserId) {
-      return res.status(400).json({ message: 'Amount, date, and UserId are required' });
-    }
-
-    // Vérifie que l'utilisateur existe
-    const user = await prisma.Users.findUnique({
-      where: { id: Number(UserId) },
-    });
-    if (!user) {
-      return res.status(400).json({ message: 'UserId invalid' });
-    }
-
-    // Conversion sécurisée du montant
-    const incomeAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
-
-    // Création du revenu
-    const income = await prisma.Incomes.create({
+    const income = await prisma.incomes.create({
       data: {
-        amount: incomeAmount,
+        amount: parseFloat(amount),
         date: new Date(date),
         type: type || null,
         description: description || null,
-        UserId: Number(UserId),
-      },
-      include: {
-        Users: {
-          select: {
-            id: true,
-            username: true,
-            email: true,
-          },
-        },
+        userId,
       },
     });
-
     res.status(201).json(income);
   } catch (error) {
-    console.error('Error creating income:', error);
-    res.status(500).json({ message: 'Erreur lors de la création du revenu', details: error.message });
-  }
-});
-
-// PUT /api/incomes/:id - Mettre à jour un revenu
-router.put('/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { amount, date, type, description } = req.body;
-
-    const incomeData = {};
-    if (amount !== undefined) incomeData.amount = typeof amount === 'string' ? parseFloat(amount) : amount;
-    if (date) incomeData.date = new Date(date);
-    if (type) incomeData.type = type;
-    if (description) incomeData.description = description;
-
-    const income = await prisma.Incomes.update({
-      where: { id: Number(id) },
-      data: incomeData,
-      include: {
-        Users: {
-          select: {
-            id: true,
-            username: true,
-            email: true,
-          },
-        },
-      },
-    });
-
-    res.json(income);
-  } catch (error) {
-    console.error('Error updating income:', error);
-    res.status(500).json({ message: 'Erreur lors de la mise à jour du revenu', details: error.message });
-  }
-});
-
-// DELETE /api/incomes/:id - Supprimer un revenu
-router.delete('/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    await prisma.Incomes.delete({
-      where: { id: Number(id) },
-    });
-
-    res.status(204).send();
-  } catch (error) {
-    console.error('Error deleting income:', error);
-    res.status(500).json({ message: 'Erreur lors de la suppression du revenu', details: error.message });
+    console.error('Erreur création revenu:', error);
+    res.status(500).json({ message: 'Erreur serveur', details: error.message });
   }
 });
 

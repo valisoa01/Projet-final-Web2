@@ -9,19 +9,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Incomes {
+ model Incomes {
   id          Int      @id @default(autoincrement())
   amount      Decimal  @db.Decimal
   date        DateTime @db.Timestamptz(6)
   description String?  @db.VarChar(255)
   type        String?  @db.VarChar(255)
   createdAt   DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime @db.Timestamptz(6)
-  UserId      Int
-  Users       Users    @relation(fields: [UserId], references: [id])
-
-  @@map("Incomes")
+  updatedAt   DateTime @default(now()) @db.Timestamptz(6) // <-- ajoute ceci
+  userId      Int
+  Users       Users    @relation(fields: [userId], references: [id])
 }
+
 
 model Categories {
   id        Int        @id @default(autoincrement())
