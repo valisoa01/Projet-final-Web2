@@ -21,10 +21,7 @@ import Expense from './Components/Site/Expense';
       <Route path="/dashboard" element={<Dashboard />} /> 
       <Route path="/profile" element={<Profile/>} />
       <Route path="/settings" element={<Settings/>} />
-      
-
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/settings" element={<Settings />} />
+      <Route path='/expense' element= {<Expense/>}/>
       </Routes>
   );
 }

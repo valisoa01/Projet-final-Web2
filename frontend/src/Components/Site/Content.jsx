@@ -138,7 +138,7 @@ const Content = ({ className }) => {
         </div>
 
         <div
-          onClick={() => window.location.href = '/expenses'}
+          onClick={() => window.location.href = '/expense'}
           className="cursor-pointer bg-red-50 dark:bg-red-900 hover:bg-red-100 dark:hover:bg-red-800 p-6 rounded-xl shadow-lg flex flex-col items-center transition-transform transform hover:scale-105 min-h-[140px]"
         >
           <CreditCard className="w-10 h-10 text-red-500 mb-2"/>

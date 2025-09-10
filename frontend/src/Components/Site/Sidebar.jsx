@@ -30,8 +30,7 @@ import { useEffect, useState } from 'react';
   return (
     <aside className="w-64 h-[90vh] fixed top-[10vh] left-0 bg-white dark:bg-gray-900 shadow-xl flex flex-col justify-between z-40 transition-colors duration-300">
       
-      {/* User profile */}
-      <div>
+       <div>
         <div className="flex items-center gap-3 p-5 border-b border-gray-200 dark:border-gray-700">
           <div className="w-12 h-12 rounded-full bg-cyan-500 flex items-center justify-center text-white font-bold ring-2 ring-cyan-300/30 overflow-hidden shadow-md">
             {profile?.profileUrl ? (
@@ -56,8 +55,7 @@ import { useEffect, useState } from 'react';
           </div>
         </div>
 
-        {/* Menu principal */}
-        <nav className="mt-6 px-3">
+         <nav className="mt-6 px-3">
           <ul className="space-y-2">
             <li>
               <button
@@ -70,7 +68,7 @@ import { useEffect, useState } from 'react';
             </li>
             <li>
               <button
-                onClick={() => navigate('/expenses')}
+                onClick={() => navigate('/expense')}
                 className="flex items-center gap-3 p-3 text-gray-700 dark:text-gray-300 hover:bg-cyan-100 dark:hover:bg-cyan-700/30 rounded-xl transition-all duration-300 w-full text-left"
               >
                 <Wallet className="w-5 h-5 text-cyan-400" />
