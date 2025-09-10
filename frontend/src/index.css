@@ -3,3 +3,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Active Tailwind dark mode */
+:root {
+  --tw-bg-opacity: 1;
+}
+
+html.dark {
+  --tw-bg-opacity: 1;
+}
+

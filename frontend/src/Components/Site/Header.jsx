@@ -3,13 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import API from "../../api/axios";
 import Logo from "../../assets/react.svg";
-import { ThemeContext } from "../../context/ThemeContext.jsx"; 
+import { ThemeContext } from "../../context/ThemeContext.jsx";
 
 const Header = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  
   const { darkMode, toggleDarkMode } = useContext(ThemeContext);
 
   useEffect(() => {
@@ -21,7 +20,7 @@ const Header = () => {
     try {
       await API.post("/auth/logout");
     } catch (err) {
-      console.error("Error during logout:", err);
+      console.error(err);
     } finally {
       localStorage.clear();
       navigate("/signin");
@@ -30,23 +29,15 @@ const Header = () => {
 
   return (
     <div className="bg-white dark:bg-gray-900 transition-colors duration-500 shadow-md h-[10vh] w-full flex items-center fixed z-50">
-      {/* Logo + App Name */}
       <div className="w-[20%] flex items-center pl-6">
         <div className="w-12 h-12 relative mr-2">
-          <div className="absolute w-4 h-4 bg-cyan-300 rounded-full top-1 left-1 animate-ping"></div>
-          <div className="absolute w-2 h-2 bg-cyan-400 rounded-full bottom-1 right-1 animate-pulse"></div>
-          <img
-            src={Logo}
-            alt="App Logo"
-            className="w-full h-full object-contain relative z-10 rounded-full"
-          />
+          <img src={Logo} alt="App Logo" className="w-full h-full object-contain rounded-full" />
         </div>
         <span className="text-xl font-semibold text-gray-800 dark:text-white transition-colors duration-500">
           Expense <span className="text-cyan-500">Tracker</span>
         </span>
       </div>
 
-      {/* Action Buttons */}
       <div className="w-[80%] flex items-center justify-end pr-6 gap-4">
         {/* Notifications */}
         <div className="relative">
@@ -72,11 +63,7 @@ const Header = () => {
             onClick={toggleDarkMode}
             className="w-10 h-10 flex items-center justify-center border border-cyan-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-300"
           >
-            {darkMode ? (
-              <Sun className="w-5 h-5 text-cyan-500" />
-            ) : (
-              <Moon className="w-5 h-5 text-cyan-500" />
-            )}
+            {darkMode ? <Sun className="w-5 h-5 text-cyan-500" /> : <Moon className="w-5 h-5 text-cyan-500" />}
           </button>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { ThemeProvider } from "./context/ThemeContext";
+
 
 import Signup from "./Components/Auth/Signup";
 import Signin from "./Components/Auth/Signin";
@@ -12,7 +12,6 @@ import Expense from "./Components/Site/Expense";
 
 function App() {
   return (
-    <ThemeProvider>
       <Routes>
         <Route path="/" element={<Navigate to="/Signin" replace />} />
         <Route path="/signup" element={<Signup />} />
@@ -24,7 +23,6 @@ function App() {
         <Route path="/incomes" element={<Incomes />} />
         <Route path="/expense" element={<Expense />} />
       </Routes>
-    </ThemeProvider>
   );
 }
 
