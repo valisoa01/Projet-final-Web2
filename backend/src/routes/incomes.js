@@ -1,14 +1,17 @@
  // routes/incomes.js
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
+import auth from '../middleware/auth.js';
 
 const prisma = new PrismaClient();
 const router = express.Router();
 
 // GET /api/incomes
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
   try {
+    // récupère uniquement les revenus de l'utilisateur connecté
     const incomes = await prisma.incomes.findMany({
+      where: { userId: req.user.id },
       include: { Users: { select: { id: true, username: true, email: true } } },
     });
     res.json(incomes);
@@ -19,12 +22,13 @@ router.get('/', async (req, res) => {
 });
 
 // POST /api/incomes/new
-router.post('/new', async (req, res) => {
-  const { amount, date, type, description, userId } = req.body;
+router.post('/new', auth, async (req, res) => {
+  const { amount, date, type, description } = req.body;
 
-  if (!userId) return res.status(400).json({ message: 'userId est requis' });
-  if (!amount || parseFloat(amount) <= 0) return res.status(400).json({ message: 'Le montant doit être positif' });
-  if (!date || isNaN(new Date(date).getTime())) return res.status(400).json({ message: 'Date invalide' });
+  if (!amount || parseFloat(amount) <= 0) 
+    return res.status(400).json({ message: 'Le montant doit être positif' });
+  if (!date || isNaN(new Date(date).getTime())) 
+    return res.status(400).json({ message: 'Date invalide' });
 
   try {
     const income = await prisma.incomes.create({
@@ -33,7 +37,7 @@ router.post('/new', async (req, res) => {
         date: new Date(date),
         type: type || null,
         description: description || null,
-        userId,
+        userId: req.user.id, // ✅ récupéré depuis le middleware
       },
     });
     res.status(201).json(income);

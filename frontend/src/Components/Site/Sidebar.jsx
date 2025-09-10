@@ -7,15 +7,18 @@ const Sidebar = () => {
   const [username, setUsername] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [profileUrl, setProfileUrl] = useState('');
+  const [token, setToken] = useState('');
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
     const storedEmail = localStorage.getItem('userEmail');
     const storedProfileUrl = localStorage.getItem('profileUrl');
-    
+    const storedToken = localStorage.getItem('token'); // <- récupère le token
+
     if (storedUsername) setUsername(storedUsername);
     if (storedEmail) setUserEmail(storedEmail);
     if (storedProfileUrl) setProfileUrl(storedProfileUrl);
+    if (storedToken) setToken(storedToken); // <- stocke le token dans le state
   }, []);
 
   const getInitials = (name) => {
