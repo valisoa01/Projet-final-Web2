@@ -1,5 +1,4 @@
- // src/ContentIncomes.jsx
-import React, { useState, useEffect } from 'react';
+ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const ContentIncomes = () => {
@@ -14,7 +13,7 @@ const ContentIncomes = () => {
   const [editingIncomeId, setEditingIncomeId] = useState(null);
 
   const incomesColumns = [
-    { name: 'Id' }, // affichera l'index + 1
+    { name: 'Id' },
     { name: 'Amount' },
     { name: 'Date' },
     { name: 'Type' },
@@ -35,7 +34,9 @@ const ContentIncomes = () => {
       const response = await axios.get('http://localhost:5000/api/incomes', {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setIncomes(response.data);
+      // Sort incomes by createdAt to maintain consistent order
+      const sortedIncomes = response.data.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+      setIncomes(sortedIncomes);
     } catch (error) {
       console.error('Erreur lors du fetch des revenus:', error.response?.data || error);
     }
@@ -65,7 +66,6 @@ const ContentIncomes = () => {
       await axios.delete(`http://localhost:5000/api/incomes/${id}/delete`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      // Supprime localement et réordonne automatiquement les index côté frontend
       setIncomes((prev) => prev.filter((i) => i.id !== id));
     } catch (error) {
       console.error('Erreur suppression:', error.response?.data || error);
@@ -82,9 +82,8 @@ const ContentIncomes = () => {
     }
 
     try {
-      let response;
       if (editingIncomeId) {
-        response = await axios.put(
+        await axios.put(
           `http://localhost:5000/api/incomes/${editingIncomeId}/edit`,
           {
             amount: parseFloat(formData.amount),
@@ -94,10 +93,25 @@ const ContentIncomes = () => {
           },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        setIncomes((prev) => prev.map((i) => (i.id === editingIncomeId ? response.data : i)));
+
+        setIncomes((prev) => {
+          const index = prev.findIndex((i) => i.id === editingIncomeId);
+          if (index === -1) return prev;
+          const updated = [...prev];
+          updated[index] = {
+            ...updated[index],
+            amount: parseFloat(formData.amount),
+            date: formData.date,
+            type: formData.type,
+            description: formData.description,
+          };
+          // Sort by createdAt to maintain order
+          return updated.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        });
+
         setEditingIncomeId(null);
       } else {
-        response = await axios.post(
+        const response = await axios.post(
           'http://localhost:5000/api/incomes/new',
           {
             amount: parseFloat(formData.amount),
@@ -107,7 +121,11 @@ const ContentIncomes = () => {
           },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        setIncomes((prev) => [...prev, response.data]);
+        setIncomes((prev) => {
+          const updated = [...prev, response.data];
+          // Sort by createdAt to maintain order
+          return updated.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        });
       }
 
       setIsFormOpen(false);
@@ -165,11 +183,13 @@ const ContentIncomes = () => {
                 </td>
               </tr>
             ))}
-
             <tr>
               <td colSpan={7} className="p-4 text-center relative">
                 <button
-                  onClick={() => { setIsFormOpen(!isFormOpen); setEditingIncomeId(null); }}
+                  onClick={() => {
+                    setIsFormOpen(!isFormOpen);
+                    setEditingIncomeId(null);
+                  }}
                   className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-full shadow-md flex items-center justify-center gap-2 transition-all mx-auto"
                 >
                   <span className="text-xl font-bold">+</span>
@@ -222,7 +242,10 @@ const ContentIncomes = () => {
                         <div className="flex justify-end gap-2 mt-3">
                           <button
                             type="button"
-                            onClick={() => { setIsFormOpen(false); setEditingIncomeId(null); }}
+                            onClick={() => {
+                              setIsFormOpen(false);
+                              setEditingIncomeId(null);
+                            }}
                             className="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded"
                           >
                             Cancel
