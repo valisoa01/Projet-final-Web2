@@ -1,7 +1,4 @@
-
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Header from "./Header";
+ import Header from "./Header";
 import Sidebar from "./Sidebar";
 import ContentIncomes from "./ContentIncomes";
 
@@ -26,4 +23,5 @@ const Incomes = () => {
     </div>
   );
 };
+
 export default Incomes;

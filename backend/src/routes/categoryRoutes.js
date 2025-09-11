@@ -1,17 +1,15 @@
 import express from "express";
+import auth from "../middleware/auth.js"; // Changé de { authMiddleware } vers auth
 import {
-  getCategories,
   createCategory,
+  getCategories,
+  updateCategory,
+  deleteCategory,
 } from "../controllers/categoryController.js";
-import authMiddleware from "../middleware/auth.js";
 
 const router = express.Router();
-
-// Appliquer l'authentification à toutes les routes
-router.use(authMiddleware);
-
-// Routes pour les catégories
-router.get("/", getCategories);
-router.post("/", createCategory);
-
+router.post("/", auth, createCategory); // Utilisez auth au lieu de authMiddleware
+router.get("/", auth, getCategories);
+router.put("/:id", auth, updateCategory);
+router.delete("/:id", auth, deleteCategory);
 export default router;

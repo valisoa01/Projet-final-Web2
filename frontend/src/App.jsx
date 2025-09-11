@@ -9,7 +9,7 @@ import Settings from './Components/Profile/Settings';
 import Incomes from './Components/Site/Incomes';
 import Expense from './Components/Site/Expense';
 
-function App() {
+ function App() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/Signin" replace />} />
@@ -19,9 +19,10 @@ function App() {
       <Route path="/Signin" element={<Signin />} />
       <Route path="/home" element={<Home />} />
       <Route path="/dashboard" element={<Dashboard />} /> 
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/settings" element={<Settings />} />
-    </Routes>
+      <Route path="/profile" element={<Profile/>} />
+      <Route path="/settings" element={<Settings/>} />
+      
+      </Routes>
   );
 }
 

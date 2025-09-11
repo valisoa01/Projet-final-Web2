@@ -1,15 +1,17 @@
 import express from "express";
-import { createExpense, getExpenses } from "../controllers/expenseController.js";
-import authMiddleware from "../middleware/auth.js";
+import auth from "../middleware/auth.js"; // Changé de { authMiddleware } vers auth
+import upload, { handleUploadError } from "../utils/upload.js";
+import {
+  createExpense,
+  getExpenses,
+  updateExpense,
+  deleteExpense,
+} from "../controllers/expenseController.js";
 
 const router = express.Router();
-
-router.use(authMiddleware);
-
-// Récupérer toutes les dépenses
-router.get("/", getExpenses);
-
-// Créer une dépense
-router.post("/", createExpense);
-
+router.post("/", auth, upload.single("receipt"), createExpense); // Utilisez auth
+router.get("/", auth, getExpenses);
+router.put("/:id", auth, upload.single("receipt"), updateExpense);
+router.delete("/:id", auth, deleteExpense);
+router.use(handleUploadError);
 export default router;
