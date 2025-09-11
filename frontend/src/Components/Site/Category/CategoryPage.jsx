@@ -25,13 +25,17 @@ const CategoryPage = () => {
     <div className="min-h-screen bg-gray-50">
       <Header/>
       <div className="flex">
-      <div className="w-64 flex-shrink-0">
+        <div className="w-64 flex-shrink-0">
           <Sidebar />
-      </div>    
-    <div className="p-4 flex flex-col gap-6 mt-[5vw] ml-[15vw]">
-      <CategoryForm onSuccess={fetchCategories} />
-      <CategoryList categories={categories} />
-    </div>
+        </div>    
+
+        {/* Contenu principal */}
+        <div className="flex-1 p-6 mt-[15vh] ml-[2vw] grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Formulaire à gauche */}
+          <CategoryForm onSuccess={fetchCategories} />
+          {/* Liste à droite */}
+          <CategoryList categories={categories} onEdit={() => {}} onDelete={() => {}} />
+        </div>
       </div>
     </div>
   );
