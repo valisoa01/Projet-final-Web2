@@ -1,5 +1,4 @@
- // routes/incomes.js
-import express from 'express';
+ import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import auth from '../middleware/auth.js';
 
@@ -9,7 +8,7 @@ const router = express.Router();
 // ✅ GET /api/incomes avec filtres
 router.get('/', auth, async (req, res) => {
   try {
-    const { month, year, type, minAmount } = req.query;
+    const { month, year, type, minAmount, maxAmount } = req.query;
 
     let where = {
       userId: req.user.id, // toujours filtrer par utilisateur connecté
@@ -34,9 +33,11 @@ router.get('/', auth, async (req, res) => {
       where.type = type;
     }
 
-    // 📌 Filtrer par montant minimum
-    if (minAmount) {
-      where.amount = { gte: parseFloat(minAmount) };
+    // 📌 Filtrer par montant minimum et/ou maximum
+    if (minAmount || maxAmount) {
+      where.amount = {};
+      if (minAmount) where.amount.gte = parseFloat(minAmount);
+      if (maxAmount) where.amount.lte = parseFloat(maxAmount);
     }
 
     const incomes = await prisma.incomes.findMany({

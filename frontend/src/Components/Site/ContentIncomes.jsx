@@ -18,6 +18,7 @@ const ContentIncomes = () => {
     year: '',
     type: '',
     minAmount: '',
+    maxAmount: '', // Nouveau filtre pour le montant maximum
   });
   const [sortConfig, setSortConfig] = useState({
     key: 'createdAt', // Colonne par défaut
@@ -51,6 +52,7 @@ const ContentIncomes = () => {
       if (filters.year) params.year = filters.year;
       if (filters.type) params.type = filters.type;
       if (filters.minAmount) params.minAmount = filters.minAmount;
+      if (filters.maxAmount) params.maxAmount = filters.maxAmount; // Ajouter maxAmount
 
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` },
@@ -240,7 +242,7 @@ const ContentIncomes = () => {
 
       {/* Filters Section */}
       <div className="w-full bg-white rounded-xl p-4 mb-6 shadow-md">
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-5 gap-4"> {/* Augmenter à 5 colonnes pour maxAmount */}
           {/* Month Filter */}
           <div>
             <label className="block text-sm font-medium text-gray-700">Month</label>
@@ -299,6 +301,21 @@ const ContentIncomes = () => {
               value={filters.minAmount}
               onChange={handleFilterChange}
               placeholder="Min Ar"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              min="0"
+              step="0.01"
+            />
+          </div>
+
+          {/* Maximum Amount Filter */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Max Amount</label>
+            <input
+              type="number"
+              name="maxAmount"
+              value={filters.maxAmount}
+              onChange={handleFilterChange}
+              placeholder="Max Ar"
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               min="0"
               step="0.01"
