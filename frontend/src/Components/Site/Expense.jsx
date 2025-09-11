@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 function ExpensePage() {
   const [expenses, setExpenses] = useState([]);
@@ -69,11 +70,11 @@ function ExpensePage() {
           }
         } else {
           const defaultCategories = [
-            { id: "1", name: "Nourriture", color: "#EF4444" },
-            { id: "2", name: "Transport", color: "#3B82F6" },
-            { id: "3", name: "Logement", color: "#10B981" },
-            { id: "4", name: "Loisirs", color: "#F59E0B" },
-            { id: "5", name: "Santé", color: "#8B5CF6" },
+            { id: "1", name: "🍔 Nourriture", color: "#EF4444" },
+            { id: "2", name: "🚗 Transport", color: "#3B82F6" },
+            { id: "3", name: "🏠 Logement", color: "#10B981" },
+            { id: "4", name: "🎮 Loisirs", color: "#F59E0B" },
+            { id: "5", name: "🏥 Santé", color: "#8B5CF6" },
           ];
           setCategories(defaultCategories);
           localStorage.setItem("expenseCategories", JSON.stringify(defaultCategories));
@@ -145,7 +146,7 @@ function ExpensePage() {
         if (res.ok) {
           const data = await res.json();
           setExpenses([data, ...expenses]);
-          setSuccess("Dépense ajoutée avec succès via l'API!");
+          setSuccess("💰 Dépense ajoutée avec succès !");
           apiSuccess = true;
         } else {
           const errorData = await res.json();
@@ -171,7 +172,7 @@ function ExpensePage() {
         setExpenses(updatedExpenses);
         localStorage.setItem("expenseExpenses", JSON.stringify(updatedExpenses));
         setUseLocalStorage(true);
-        setSuccess("Dépense ajoutée avec succès (mode hors ligne)!");
+        setSuccess("💰 Dépense ajoutée (mode hors ligne) !");
       }
 
       // reset form
@@ -186,7 +187,7 @@ function ExpensePage() {
         endDate: "",
       });
     } catch (err) {
-      setError(err.message || "Erreur lors de l'ajout");
+      setError(err.message || "❌ Erreur lors de l'ajout");
     }
   };
 
@@ -211,7 +212,7 @@ function ExpensePage() {
 
         if (res.ok) {
           setExpenses(expenses.filter((exp) => exp.id !== deletingExpense.id));
-          setSuccess("Dépense supprimée avec succès!");
+          setSuccess("🗑️ Dépense supprimée avec succès !");
         } else {
           const errorData = await res.json();
           throw new Error(errorData.error || "Erreur API");
@@ -221,7 +222,7 @@ function ExpensePage() {
         setExpenses(updatedExpenses);
         localStorage.setItem("expenseExpenses", JSON.stringify(updatedExpenses));
         setUseLocalStorage(true);
-        setSuccess("Dépense supprimée (hors ligne)!");
+        setSuccess("🗑️ Dépense supprimée (hors ligne) !");
       }
     } finally {
       setDeletingExpense(null);
@@ -230,294 +231,487 @@ function ExpensePage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="flex flex-col items-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-violet-600 mb-4"></div>
-          <p className="text-violet-700 font-medium">Chargement des données...</p>
-        </div>
-      </div>
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="flex justify-center items-center h-screen bg-gradient-to-br from-violet-50 to-indigo-100"
+      >
+        <motion.div
+          animate={{ 
+            rotate: 360,
+            scale: [1, 1.1, 1]
+          }}
+          transition={{ 
+            rotate: { duration: 1, repeat: Infinity, ease: "linear" },
+            scale: { duration: 0.5, repeat: Infinity, repeatType: "reverse" }
+          }}
+          className="flex flex-col items-center"
+        >
+          <div className="w-16 h-16 border-4 border-violet-600 border-t-transparent rounded-full mb-4"></div>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-violet-700 font-medium"
+          >
+            Chargement...
+          </motion.p>
+        </motion.div>
+      </motion.div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 to-indigo-100 px-4 py-8">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-gradient-to-br from-violet-50 via-blue-50 to-indigo-100 px-4 py-8"
+    >
       <div className="container mx-auto max-w-6xl">
         {/* Header */}
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center p-4 bg-white rounded-full shadow-lg mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <h1 className="text-4xl font-bold text-violet-800 mb-2">Gestion des Dépenses</h1>
-          <p className="text-violet-600 max-w-lg mx-auto">Suivez et gérez toutes vos dépenses personnelles en un seul endroit</p>
-        </div>
+        <motion.div 
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <motion.div 
+            whileHover={{ scale: 1.05, rotate: 5 }}
+            className="inline-flex items-center justify-center p-6 bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl shadow-violet-200 mb-6"
+          >
+            <motion.div
+              animate={{ 
+                y: [0, -5, 0],
+                rotate: [0, 5, 0]
+              }}
+              transition={{ 
+                duration: 2, 
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
+              <span className="text-4xl">💰</span>
+            </motion.div>
+          </motion.div>
+          <h1 className="text-5xl font-bold text-violet-800 mb-4 bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+            Gestion des Dépenses
+          </h1>
+          <p className="text-violet-600/80 text-lg max-w-lg mx-auto font-light">
+            Suivez et gérez toutes vos dépenses personnelles en un seul endroit
+          </p>
+        </motion.div>
 
         {/* Alertes */}
-        <div className="mb-6 space-y-3">
+        <AnimatePresence>
           {error && (
-            <div className="flex items-center p-4 rounded-lg bg-red-50 border border-red-200 text-red-700">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-              </svg>
-              {error}
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="mb-6"
+            >
+              <div className="flex items-center p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 backdrop-blur-sm">
+                <span className="text-xl mr-3">⚠️</span>
+                {error}
+              </div>
+            </motion.div>
           )}
+          
           {success && (
-            <div className="flex items-center p-4 rounded-lg bg-green-50 border border-green-200 text-green-700">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-              {success}
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="mb-6"
+            >
+              <div className="flex items-center p-4 rounded-2xl bg-green-50 border border-green-200 text-green-700 backdrop-blur-sm">
+                <motion.span
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 0.5 }}
+                  className="text-xl mr-3"
+                >
+                  ✅
+                </motion.span>
+                {success}
+              </div>
+            </motion.div>
           )}
+          
           {useLocalStorage && (
-            <div className="flex items-center p-4 rounded-lg bg-amber-50 border border-amber-200 text-amber-700">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-              </svg>
-              Mode hors ligne : données locales utilisées.
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6"
+            >
+              <div className="flex items-center p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-700 backdrop-blur-sm">
+                <span className="text-xl mr-3">📴</span>
+                Mode hors ligne : données locales utilisées.
+              </div>
+            </motion.div>
           )}
-        </div>
+        </AnimatePresence>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Formulaire ajout */}
-          <div className="bg-white rounded-2xl p-6 shadow-xl border border-violet-100">
-            <div className="flex items-center mb-6">
-              <div className="p-2 bg-violet-100 rounded-lg mr-3">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-semibold text-violet-800">Nouvelle Dépense</h2>
+          <motion.div
+            initial={{ x: -50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.6 }}
+            className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-2xl shadow-violet-100 border border-white/20"
+          >
+            <div className="flex items-center mb-8">
+              <motion.div 
+                whileHover={{ rotate: 180 }}
+                transition={{ duration: 0.3 }}
+                className="p-3 bg-gradient-to-r from-violet-600 to-purple-600 rounded-2xl mr-4"
+              >
+                <span className="text-2xl text-white">➕</span>
+              </motion.div>
+              <h2 className="text-3xl font-bold text-violet-800">Nouvelle Dépense</h2>
             </div>
             
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label className="block text-violet-700 font-medium mb-2">Montant (Ar)</label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">Ar</span>
+                <label className="block text-violet-700 font-semibold mb-3 text-lg">Montant (Ar)</label>
+                <motion.div 
+                  whileFocus={{ scale: 1.02 }}
+                  className="relative"
+                >
+                  <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-violet-600 text-lg">💰</span>
                   <input
                     type="number"
                     step="0.01"
                     min="0"
-                    className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
+                    className="w-full pl-12 pr-6 py-4 rounded-2xl border-2 border-violet-100 focus:border-violet-500 focus:ring-4 focus:ring-violet-200 transition-all duration-300 text-lg"
                     value={form.amount}
                     onChange={(e) => setForm({ ...form, amount: e.target.value })}
                     required
                     placeholder="0.00"
                   />
-                </div>
+                </motion.div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-violet-700 font-medium mb-2">Date</label>
-                  <input
-                    type="date"
-                    className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
-                    value={form.date}
-                    onChange={(e) => setForm({ ...form, date: e.target.value })}
-                    required
-                  />
+                  <label className="block text-violet-700 font-semibold mb-3 text-lg">📅 Date</label>
+                  <motion.div whileFocus={{ scale: 1.02 }}>
+                    <input
+                      type="date"
+                      className="w-full px-6 py-4 rounded-2xl border-2 border-violet-100 focus:border-violet-500 focus:ring-4 focus:ring-violet-200 transition-all duration-300 text-lg"
+                      value={form.date}
+                      onChange={(e) => setForm({ ...form, date: e.target.value })}
+                      required
+                    />
+                  </motion.div>
                 </div>
 
                 <div>
-                  <label className="block text-violet-700 font-medium mb-2">Type</label>
-                  <select
-                    className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
-                    value={form.type}
-                    onChange={(e) => setForm({ ...form, type: e.target.value })}
-                    required
-                  >
-                    <option value="one-time">Ponctuelle</option>
-                    <option value="recurring">Récurrente</option>
-                  </select>
+                  <label className="block text-violet-700 font-semibold mb-3 text-lg">🔄 Type</label>
+                  <motion.div whileFocus={{ scale: 1.02 }}>
+                    <select
+                      className="w-full px-6 py-4 rounded-2xl border-2 border-violet-100 focus:border-violet-500 focus:ring-4 focus:ring-violet-200 transition-all duration-300 text-lg appearance-none bg-white"
+                      value={form.type}
+                      onChange={(e) => setForm({ ...form, type: e.target.value })}
+                      required
+                    >
+                      <option value="one-time">Ponctuelle</option>
+                      <option value="recurring">Récurrente</option>
+                    </select>
+                  </motion.div>
                 </div>
               </div>
 
               <div>
-                <label className="block text-violet-700 font-medium mb-2">Description</label>
-                <input
-                  type="text"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
-                  value={form.description}
-                  onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  placeholder="Ex: Taxi, Déjeuner, Courses..."
-                />
+                <label className="block text-violet-700 font-semibold mb-3 text-lg">📝 Description</label>
+                <motion.div whileFocus={{ scale: 1.02 }}>
+                  <input
+                    type="text"
+                    className="w-full px-6 py-4 rounded-2xl border-2 border-violet-100 focus:border-violet-500 focus:ring-4 focus:ring-violet-200 transition-all duration-300 text-lg"
+                    value={form.description}
+                    onChange={(e) => setForm({ ...form, description: e.target.value })}
+                    placeholder="Ex: Taxi, Déjeuner, Courses..."
+                  />
+                </motion.div>
               </div>
 
               {form.type === "recurring" && (
-                <div className="bg-violet-50 p-4 rounded-lg space-y-4">
-                  <h3 className="font-medium text-violet-800">Détails de récurrence</h3>
+                <motion.div 
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  transition={{ duration: 0.4 }}
+                  className="bg-gradient-to-r from-violet-50 to-purple-50 p-6 rounded-2xl space-y-6 border-2 border-violet-100"
+                >
+                  <h3 className="font-bold text-violet-800 text-lg flex items-center">
+                    <span className="text-xl mr-2">⏰</span>
+                    Détails de récurrence
+                  </h3>
                   
                   <div>
-                    <label className="block text-violet-700 font-medium mb-2">Fréquence</label>
-                    <select
-                      className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
-                      value={form.recurrence}
-                      onChange={(e) => setForm({ ...form, recurrence: e.target.value })}
-                    >
-                      <option value="monthly">Mensuelle</option>
-                      <option value="quarterly">Trimestrielle</option>
-                      <option value="yearly">Annuelle</option>
-                    </select>
+                    <label className="block text-violet-700 font-semibold mb-3">🔄 Fréquence</label>
+                    <motion.div whileFocus={{ scale: 1.02 }}>
+                      <select
+                        className="w-full px-6 py-3 rounded-2xl border-2 border-violet-100 focus:border-violet-500 focus:ring-4 focus:ring-violet-200 transition-all duration-300"
+                        value={form.recurrence}
+                        onChange={(e) => setForm({ ...form, recurrence: e.target.value })}
+                      >
+                        <option value="monthly">Mensuelle</option>
+                        <option value="quarterly">Trimestrielle</option>
+                        <option value="yearly">Annuelle</option>
+                      </select>
+                    </motion.div>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-violet-700 font-medium mb-2">Date de début</label>
-                      <input
-                        type="date"
-                        className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
-                        value={form.startDate}
-                        onChange={(e) => setForm({ ...form, startDate: e.target.value })}
-                      />
+                      <label className="block text-violet-700 font-semibold mb-3">📅 Début</label>
+                      <motion.div whileFocus={{ scale: 1.02 }}>
+                        <input
+                          type="date"
+                          className="w-full px-6 py-3 rounded-2xl border-2 border-violet-100 focus:border-violet-500 focus:ring-4 focus:ring-violet-200 transition-all duration-300"
+                          value={form.startDate}
+                          onChange={(e) => setForm({ ...form, startDate: e.target.value })}
+                        />
+                      </motion.div>
                     </div>
                     <div>
-                      <label className="block text-violet-700 font-medium mb-2">Date de fin (optionnel)</label>
-                      <input
-                        type="date"
-                        className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
-                        value={form.endDate}
-                        onChange={(e) => setForm({ ...form, endDate: e.target.value })}
-                      />
+                      <label className="block text-violet-700 font-semibold mb-3">⏹️ Fin (optionnel)</label>
+                      <motion.div whileFocus={{ scale: 1.02 }}>
+                        <input
+                          type="date"
+                          className="w-full px-6 py-3 rounded-2xl border-2 border-violet-100 focus:border-violet-500 focus:ring-4 focus:ring-violet-200 transition-all duration-300"
+                          value={form.endDate}
+                          onChange={(e) => setForm({ ...form, endDate: e.target.value })}
+                        />
+                      </motion.div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               )}
 
               <div>
-                <label className="block text-violet-700 font-medium mb-2">Catégorie</label>
-                <div className="flex space-x-2">
-                  <select
-                    className="flex-1 px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-violet-500 focus:border-transparent transition"
-                    value={form.categoryId}
-                    onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
-                  >
-                    {categories.map((cat) => (
-                      <option key={cat.id} value={cat.id}>
-                        {cat.name}
-                      </option>
-                    ))}
-                  </select>
-                  <button
+                <label className="block text-violet-700 font-semibold mb-3 text-lg">🏷️ Catégorie</label>
+                <div className="flex space-x-4">
+                  <motion.div whileFocus={{ scale: 1.02 }} className="flex-1">
+                    <select
+                      className="w-full px-6 py-4 rounded-2xl border-2 border-violet-100 focus:border-violet-500 focus:ring-4 focus:ring-violet-200 transition-all duration-300 text-lg appearance-none bg-white"
+                      value={form.categoryId}
+                      onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
+                    >
+                      {categories.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </select>
+                  </motion.div>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     type="button"
-                    className="bg-violet-600 text-white px-4 py-3 rounded-lg hover:bg-violet-700 transition flex items-center"
+                    className="bg-gradient-to-r from-violet-600 to-purple-600 text-white px-6 py-4 rounded-2xl hover:from-violet-700 hover:to-purple-700 transition-all duration-300 flex items-center shadow-lg shadow-violet-200"
                     onClick={() => setShowCategoryModal(true)}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
-                    </svg>
-                  </button>
+                    <span className="text-xl">➕</span>
+                  </motion.button>
                 </div>
               </div>
 
-              <div className="pt-4">
-                <button
+              <div className="pt-6">
+                <motion.button
+                  whileHover={{ 
+                    scale: 1.02,
+                    boxShadow: "0 10px 30px -10px rgba(139, 92, 246, 0.5)"
+                  }}
+                  whileTap={{ scale: 0.98 }}
                   type="submit"
-                  className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white px-6 py-3 rounded-lg hover:from-violet-700 hover:to-indigo-700 transition shadow-md font-medium"
+                  className="w-full bg-gradient-to-r from-violet-600 to-purple-600 text-white px-8 py-5 rounded-2xl hover:from-violet-700 hover:to-purple-700 transition-all duration-300 shadow-2xl shadow-violet-300 font-bold text-lg"
                 >
+                  <span className="text-xl mr-3">💾</span>
                   Ajouter la dépense
-                </button>
+                </motion.button>
               </div>
             </form>
-          </div>
+          </motion.div>
 
           {/* Liste des dépenses */}
-          <div className="bg-white rounded-2xl p-6 shadow-xl border border-violet-100">
-            <div className="flex items-center justify-between mb-6">
+          <motion.div
+            initial={{ x: 50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-2xl shadow-violet-100 border border-white/20"
+          >
+            <div className="flex items-center justify-between mb-8">
               <div className="flex items-center">
-                <div className="p-2 bg-violet-100 rounded-lg mr-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                  </svg>
-                </div>
-                <h2 className="text-2xl font-semibold text-violet-800">Liste des Dépenses</h2>
+                <motion.div 
+                  whileHover={{ rotate: 10 }}
+                  className="p-3 bg-gradient-to-r from-violet-600 to-purple-600 rounded-2xl mr-4"
+                >
+                  <span className="text-2xl text-white">📋</span>
+                </motion.div>
+                <h2 className="text-3xl font-bold text-violet-800">Mes Dépenses</h2>
               </div>
-              <span className="bg-violet-100 text-violet-800 px-3 py-1 rounded-full text-sm font-medium">
+              <motion.span 
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="bg-gradient-to-r from-violet-600 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-bold"
+              >
                 {expenses.length} {expenses.length === 1 ? 'dépense' : 'dépenses'}
-              </span>
+              </motion.span>
             </div>
             
             {expenses.length === 0 ? (
-              <div className="text-center py-10">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-                <p className="text-gray-500">Aucune dépense enregistrée.</p>
-                <p className="text-gray-400 text-sm mt-1">Commencez par ajouter une dépense</p>
-              </div>
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center py-16"
+              >
+                <motion.div
+                  animate={{ 
+                    y: [0, -10, 0],
+                    rotate: [0, -5, 0]
+                  }}
+                  transition={{ 
+                    duration: 3, 
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  className="text-6xl mb-6"
+                >
+                  💸
+                </motion.div>
+                <p className="text-gray-500 text-lg mb-2">Aucune dépense enregistrée</p>
+                <p className="text-gray-400">Commencez par ajouter une dépense</p>
+              </motion.div>
             ) : (
-              <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
-                {expenses.map((exp) => {
-                  const cat = categories.find((c) => c.id === exp.categoryId);
-                  return (
-                    <div
-                      key={exp.id}
-                      className="flex justify-between items-start p-4 rounded-lg border border-gray-100 hover:border-violet-200 hover:bg-violet-50 transition"
-                    >
-                      <div className="flex items-start space-x-3">
-                        <div className="p-2 rounded-lg mt-1" style={{ backgroundColor: cat?.color + '20' }}>
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" style={{ color: cat?.color }} viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
-                          </svg>
-                        </div>
-                        <div>
-                          <p className="font-semibold text-gray-800">{exp.description || "Sans description"}</p>
-                          <p className="text-gray-600 text-sm mt-1">
-                            {parseFloat(exp.amount).toLocaleString('fr-MG', { minimumFractionDigits: 2 })} Ar
-                          </p>
-                          <div className="flex items-center mt-2 space-x-3">
-                            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                              {exp.date}
+              <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+                <AnimatePresence>
+                  {expenses.map((exp, index) => {
+                    const cat = categories.find((c) => c.id === exp.categoryId);
+                    return (
+                      <motion.div
+                        key={exp.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, x: -100 }}
+                        transition={{ duration: 0.3, delay: index * 0.1 }}
+                        whileHover={{ scale: 1.02 }}
+                        className="flex justify-between items-start p-6 rounded-2xl bg-white/50 backdrop-blur-sm border-2 border-violet-100 hover:border-violet-300 hover:shadow-lg transition-all duration-300"
+                      >
+                        <div className="flex items-start space-x-4">
+                          <motion.div 
+                            whileHover={{ scale: 1.1, rotate: 5 }}
+                            className="p-3 rounded-2xl mt-1 shadow-md"
+                            style={{ backgroundColor: cat?.color + '20' }}
+                          >
+                            <span className="text-2xl" style={{ color: cat?.color }}>
+                              {cat?.name.split(' ')[0]}
                             </span>
-                            {cat && (
-                              <span
-                                className="text-xs px-2 py-1 rounded-full font-medium"
-                                style={{ backgroundColor: cat.color + '20', color: cat.color }}
-                              >
-                                {cat.name}
+                          </motion.div>
+                          <div>
+                            <p className="font-bold text-gray-800 text-lg">{exp.description || "Sans description"}</p>
+                            <motion.p 
+                              initial={{ scale: 0.8 }}
+                              animate={{ scale: 1 }}
+                              className="text-2xl font-bold text-violet-700 mt-2"
+                            >
+                              {parseFloat(exp.amount).toLocaleString('fr-MG')} Ar
+                            </motion.p>
+                            <div className="flex items-center mt-3 space-x-3">
+                              <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                                📅 {new Date(exp.date).toLocaleDateString('fr-FR')}
                               </span>
-                            )}
-                            {exp.type === 'recurring' && (
-                              <span className="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full">
-                                Récurrente
-                              </span>
-                            )}
+                              {cat && (
+                                <span
+                                  className="text-sm px-3 py-1 rounded-full font-medium"
+                                  style={{ backgroundColor: cat.color + '20', color: cat.color }}
+                                >
+                                  {cat.name}
+                                </span>
+                              )}
+                              {exp.type === 'recurring' && (
+                                <span className="text-sm bg-amber-100 text-amber-800 px-3 py-1 rounded-full">
+                                  🔄 Récurrente
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="flex space-x-2">
-                        <button
-                          onClick={() => openEditModal(exp)}
-                          className="text-violet-600 hover:text-violet-800 p-2 rounded-full hover:bg-violet-100 transition"
-                          title="Modifier"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                          </svg>
-                        </button>
-                        <button
-                          onClick={() => setDeletingExpense(exp)}
-                          className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-100 transition"
-                          title="Supprimer"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
+                        <div className="flex space-x-2">
+                          <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={() => openEditModal(exp)}
+                            className="text-violet-600 hover:text-violet-800 p-3 rounded-2xl hover:bg-violet-100 transition-all duration-300"
+                            title="Modifier"
+                          >
+                            <span className="text-xl">✏️</span>
+                          </motion.button>
+                          <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={() => setDeletingExpense(exp)}
+                            className="text-red-500 hover:text-red-700 p-3 rounded-2xl hover:bg-red-100 transition-all duration-300"
+                            title="Supprimer"
+                          >
+                            <span className="text-xl">🗑️</span>
+                          </motion.button>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </AnimatePresence>
               </div>
             )}
-          </div>
+          </motion.div>
         </div>
+
+        {/* Modal de confirmation de suppression */}
+        <AnimatePresence>
+          {deletingExpense && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            >
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.8, opacity: 0 }}
+                className="bg-white rounded-3xl p-8 w-full max-w-md shadow-2xl"
+              >
+                <div className="text-center mb-6">
+                  <span className="text-6xl">❓</span>
+                  <h3 className="text-2xl font-bold text-violet-800 mt-4">Confirmer la suppression</h3>
+                  <p className="text-gray-600 mt-2">
+                    Êtes-vous sûr de vouloir supprimer cette dépense ?
+                  </p>
+                </div>
+                <div className="flex justify-center space-x-4">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="px-6 py-3 rounded-2xl border-2 border-violet-200 text-violet-600 hover:bg-violet-50 transition-all duration-300"
+                    onClick={() => setDeletingExpense(null)}
+                  >
+                    Annuler
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="px-6 py-3 rounded-2xl bg-red-600 text-white hover:bg-red-700 transition-all duration-300 shadow-lg shadow-red-200"
+                    onClick={handleDeleteExpense}
+                  >
+                    Supprimer
+                  </motion.button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
