@@ -137,6 +137,10 @@ const ContentIncomes = () => {
 
   // Calculate total amount
   const totalAmount = incomes.reduce((sum, income) => sum + parseFloat(income.amount || 0), 0);
+  // Calculate number of incomes
+  const incomeCount = incomes.length;
+  // Get latest income date
+  const latestDate = incomes.length > 0 ? incomes[incomes.length - 1].createdAt?.split('T')[0] : 'N/A';
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col items-center p-4 sm:p-6">
@@ -144,6 +148,34 @@ const ContentIncomes = () => {
         Income Tracking Dashboard
       </h1>
 
+      {/* Cards Section */}
+      <div className="w-full grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        {/* Card 1: Total Income */}
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl p-3 shadow-lg h-32 sm:h-40 flex items-center justify-center transform hover:scale-105 transition-all duration-300">
+          <div className="text-center">
+            <h3 className="text-sm font-semibold">Total Income</h3>
+            <p className="text-xl sm:text-2xl font-bold mt-1">{totalAmount.toFixed(2)} Ar</p>
+          </div>
+        </div>
+
+        {/* Card 2: Number of Incomes */}
+        <div className="bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-xl p-3 shadow-lg h-32 sm:h-40 flex items-center justify-center transform hover:scale-105 transition-all duration-300">
+          <div className="text-center">
+            <h3 className="text-sm font-semibold">Income Count</h3>
+            <p className="text-xl sm:text-2xl font-bold mt-1">{incomeCount}</p>
+          </div>
+        </div>
+
+        {/* Card 3: Latest Income Date */}
+        <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl p-3 shadow-lg h-32 sm:h-40 flex items-center justify-center transform hover:scale-105 transition-all duration-300">
+          <div className="text-center">
+            <h3 className="text-sm font-semibold">Latest Income</h3>
+            <p className="text-xl sm:text-2xl font-bold mt-1">{latestDate}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Table Section */}
       <div className="w-full bg-white rounded-2xl shadow-xl">
         <table className="w-full table-auto border-collapse">
           <thead className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
@@ -177,13 +209,13 @@ const ContentIncomes = () => {
                     onClick={() => handleEdit(income)}
                     className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-4 py-2 rounded-lg shadow-md transition-all"
                   >
-                    Modifier
+                    Modify
                   </button>
                   <button
                     onClick={() => handleDelete(income.id)}
                     className="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md transition-all"
                   >
-                    Supprimer
+                    Delete
                   </button>
                 </td>
               </tr>
