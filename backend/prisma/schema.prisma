@@ -16,10 +16,11 @@ datasource db {
   description String?  @db.VarChar(255)
   type        String?  @db.VarChar(255)
   createdAt   DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime @default(now()) @db.Timestamptz(6) // <-- ajoute ceci
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6) // <-- automatique à chaque update
   userId      Int
   Users       Users    @relation(fields: [userId], references: [id])
 }
+
 
 
 model Categories {
