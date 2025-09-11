@@ -37,7 +37,7 @@ const ContentIncomes = () => {
 
   useEffect(() => {
     fetchIncomes();
-  }, [filters, sortConfig]); // Relancer le fetch quand les filtres ou le tri changent
+  }, [filters, sortConfig]);
 
   const fetchIncomes = async () => {
     const token = localStorage.getItem('token');
@@ -47,32 +47,28 @@ const ContentIncomes = () => {
       let url = 'http://localhost:5000/api/incomes';
       const params = {};
 
-      // Ajouter les filtres aux paramètres de la requête
       if (filters.month) params.month = filters.month;
       if (filters.year) params.year = filters.year;
       if (filters.type) params.type = filters.type;
       if (filters.minAmount) params.minAmount = filters.minAmount;
-      if (filters.maxAmount) params.maxAmount = filters.maxAmount; // Ajouter maxAmount
+      if (filters.maxAmount) params.maxAmount = filters.maxAmount;
 
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` },
         params,
       });
-      let sortedIncomes = [...response.data]; // Copie pour éviter de modifier les données brutes
+      let sortedIncomes = [...response.data];
 
-      // Appliquer le tri localement
       sortedIncomes.sort((a, b) => {
         let aValue = a[sortConfig.key];
         let bValue = b[sortConfig.key];
 
-        // Gestion des dates
         if (sortConfig.key === 'createdAt' || sortConfig.key === 'date') {
           aValue = aValue ? new Date(aValue) : new Date(0);
           bValue = bValue ? new Date(bValue) : new Date(0);
           if (isNaN(aValue)) aValue = new Date(0);
           if (isNaN(bValue)) bValue = new Date(0);
         } else {
-          // Pour les nombres ou chaînes
           aValue = aValue || '';
           bValue = bValue || '';
         }
@@ -227,11 +223,11 @@ const ContentIncomes = () => {
     }
   };
 
-  // Calculate total amount
+  // Extraire les types uniques à partir des incomes
+  const uniqueTypes = [...new Set(incomes.map(income => income.type).filter(type => type))];
+
   const totalAmount = incomes.reduce((sum, income) => sum + parseFloat(income.amount || 0), 0);
-  // Calculate number of incomes
   const incomeCount = incomes.length;
-  // Get latest income date
   const latestDate = incomes.length > 0 ? incomes[incomes.length - 1].createdAt?.split('T')[0] : 'N/A';
 
   return (
@@ -241,16 +237,16 @@ const ContentIncomes = () => {
       </h1>
 
       {/* Filters Section */}
-      <div className="w-full bg-white rounded-xl p-4 mb-6 shadow-md">
-        <div className="grid grid-cols-1 sm:grid-cols-5 gap-4"> {/* Augmenter à 5 colonnes pour maxAmount */}
+      <div className="w-full bg-white rounded-2xl p-6 mb-6 shadow-lg transform transition-all duration-300 hover:shadow-xl">
+        <div className="grid grid-cols-1 sm:grid-cols-5 gap-6">
           {/* Month Filter */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Month</label>
+          <div className="relative">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Month</label>
             <select
               name="month"
               value={filters.month}
               onChange={handleFilterChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 hover:bg-gray-50"
             >
               <option value="">All</option>
               {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
@@ -260,13 +256,13 @@ const ContentIncomes = () => {
           </div>
 
           {/* Year Filter */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Year</label>
+          <div className="relative">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Year</label>
             <select
               name="year"
               value={filters.year}
               onChange={handleFilterChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 hover:bg-gray-50"
             >
               <option value="">All</option>
               {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i).map((y) => (
@@ -276,47 +272,46 @@ const ContentIncomes = () => {
           </div>
 
           {/* Type Filter */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Type</label>
+          <div className="relative">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
             <select
               name="type"
               value={filters.type}
               onChange={handleFilterChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 hover:bg-gray-50"
             >
               <option value="">All</option>
-              <option value="Salary">Salary</option>
-              <option value="Freelance">Freelance</option>
-              <option value="Investment">Investment</option>
-              {/* Ajoutez d'autres types selon vos données */}
+              {uniqueTypes.map((type) => (
+                <option key={type} value={type}>{type}</option>
+              ))}
             </select>
           </div>
 
           {/* Minimum Amount Filter */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Min Amount</label>
+          <div className="relative">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Min Amount</label>
             <input
               type="number"
               name="minAmount"
               value={filters.minAmount}
               onChange={handleFilterChange}
               placeholder="Min Ar"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 hover:bg-gray-50"
               min="0"
               step="0.01"
             />
           </div>
 
           {/* Maximum Amount Filter */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Max Amount</label>
+          <div className="relative">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Max Amount</label>
             <input
               type="number"
               name="maxAmount"
               value={filters.maxAmount}
               onChange={handleFilterChange}
               placeholder="Max Ar"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 hover:bg-gray-50"
               min="0"
               step="0.01"
             />
@@ -325,28 +320,28 @@ const ContentIncomes = () => {
       </div>
 
       {/* Cards Section */}
-      <div className="w-full grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+      <div className="w-full grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
         {/* Card 1: Total Income */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl p-3 shadow-lg h-32 sm:h-40 flex items-center justify-center transform hover:scale-105 transition-all duration-300">
+        <div className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-xl p-6 shadow-xl transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
           <div className="text-center">
-            <h3 className="text-sm font-semibold">Total Income</h3>
-            <p className="text-xl sm:text-2xl font-bold mt-1">{totalAmount.toFixed(2)} Ar</p>
+            <h3 className="text-sm font-semibold uppercase tracking-wide">Total Income</h3>
+            <p className="text-3xl font-extrabold mt-2">{totalAmount.toFixed(2)} Ar</p>
           </div>
         </div>
 
         {/* Card 2: Number of Incomes */}
-        <div className="bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-xl p-3 shadow-lg h-32 sm:h-40 flex items-center justify-center transform hover:scale-105 transition-all duration-300">
+        <div className="bg-gradient-to-br from-green-600 to-teal-700 text-white rounded-xl p-6 shadow-xl transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
           <div className="text-center">
-            <h3 className="text-sm font-semibold">Income Count</h3>
-            <p className="text-xl sm:text-2xl font-bold mt-1">{incomeCount}</p>
+            <h3 className="text-sm font-semibold uppercase tracking-wide">Income Count</h3>
+            <p className="text-3xl font-extrabold mt-2">{incomeCount}</p>
           </div>
         </div>
 
         {/* Card 3: Latest Income Date */}
-        <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl p-3 shadow-lg h-32 sm:h-40 flex items-center justify-center transform hover:scale-105 transition-all duration-300">
+        <div className="bg-gradient-to-br from-purple-600 to-pink-700 text-white rounded-xl p-6 shadow-xl transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
           <div className="text-center">
-            <h3 className="text-sm font-semibold">Latest Income</h3>
-            <p className="text-xl sm:text-2xl font-bold mt-1">{latestDate}</p>
+            <h3 className="text-sm font-semibold uppercase tracking-wide">Latest Income</h3>
+            <p className="text-3xl font-extrabold mt-2">{latestDate}</p>
           </div>
         </div>
       </div>
@@ -360,7 +355,7 @@ const ContentIncomes = () => {
                 <th
                   key={col.key || col.name}
                   className="p-4 text-center font-semibold text-sm md:text-base cursor-pointer"
-                  onClick={() => col.key && requestSort(col.key)} // Activer le tri uniquement pour les colonnes avec key
+                  onClick={() => col.key && requestSort(col.key)}
                 >
                   {col.name}
                   {col.optional && <span className="text-xs ml-1 font-normal">(optional)</span>}
@@ -400,7 +395,6 @@ const ContentIncomes = () => {
                 </td>
               </tr>
             ))}
-            {/* Total row */}
             <tr className="bg-gray-100 font-bold">
               <td className="p-4 border-b border-gray-200 text-center">Total</td>
               <td className="p-4 border-b border-gray-200 text-center font-medium">{totalAmount.toFixed(2)} Ar</td>
