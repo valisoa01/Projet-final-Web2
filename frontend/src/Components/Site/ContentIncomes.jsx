@@ -167,7 +167,7 @@ const ContentIncomes = () => {
                 className="transition-all duration-300 hover:bg-indigo-50 hover:scale-[1.02] cursor-pointer"
               >
                 <td className="p-4 border-b border-gray-200 text-center font-medium">{index + 1}</td>
-                <td className="p-4 border-b border-gray-200 text-center font-medium">${income.amount}</td>
+                <td className="p-4 border-b border-gray-200 text-center font-medium">{income.amount} Ar</td>
                 <td className="p-4 border-b border-gray-200 text-center">{income.date?.split('T')[0]}</td>
                 <td className="p-4 border-b border-gray-200 text-center">{income.type}</td>
                 <td className="p-4 border-b border-gray-200 text-center">{income.description}</td>
@@ -191,7 +191,7 @@ const ContentIncomes = () => {
             {/* Total row */}
             <tr className="bg-gray-100 font-bold">
               <td className="p-4 border-b border-gray-200 text-center">Total</td>
-              <td className="p-4 border-b border-gray-200 text-center font-medium">${totalAmount.toFixed(2)}</td>
+              <td className="p-4 border-b border-gray-200 text-center font-medium">{totalAmount.toFixed(2)} Ar</td>
               <td className="p-4 border-b border-gray-200 text-center"></td>
               <td className="p-4 border-b border-gray-200 text-center"></td>
               <td className="p-4 border-b border-gray-200 text-center"></td>
