@@ -1,9 +1,9 @@
  import { Home, Wallet, Briefcase, User, Settings } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
- import API from "../../api/axios";
- 
- const Sidebar = () => {
+import API from "../../api/axios";
+
+const Sidebar = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
 
@@ -11,6 +11,8 @@ import { useEffect, useState } from 'react';
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('token');
+        if (!token) return;
+
         const res = await API.get('/users/me', {
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -51,7 +53,7 @@ import { useEffect, useState } from 'react';
               {profile?.username || 'User'}
             </h2>
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              {profile?.userEmail || ''}
+              {profile?.email || ''}
             </p>
           </div>
         </div>
@@ -90,7 +92,7 @@ import { useEffect, useState } from 'react';
         </nav>
       </div>
 
-       <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
         <ul className="space-y-2">
           <li>
             <button  
