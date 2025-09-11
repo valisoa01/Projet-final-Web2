@@ -1,90 +1,122 @@
-// controllers/categoryController.js
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// Récupérer toutes les catégories de l'utilisateur
-export const getCategories = async (req, res) => {
-  const userId = req.user.id;
-  try {
-    const categories = await prisma.category.findMany({
-      where: { userId },
-      orderBy: { name: 'asc' }
-    });
-    res.json(categories);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
-// Créer une nouvelle catégorie
+/**
+ * @desc Create category
+ * @route POST /api/categories
+ * @access Private
+ */
 export const createCategory = async (req, res) => {
-  const userId = req.user.id;
-  const { name, color } = req.body;
-
   try {
-    // Validation
-    if (!name) {
-      return res.status(400).json({ error: "Le nom de la catégorie est requis" });
+    const userId = req.user.id;
+    const { name, budget } = req.body;
+
+    if (!name || !budget) {
+      return res.status(400).json({ message: "Name and budget are required" });
     }
 
-    const category = await prisma.category.create({
+    const category = await prisma.categories.create({
       data: {
         name,
-        color: color || "#3B82F6",
-        userId,
+        budget: parseFloat(budget),
+        UserId: userId,
       },
     });
+
     res.status(201).json(category);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// Modifier une catégorie
+/**
+ * @desc Get all categories
+ * @route GET /api/categories
+ * @access Private
+ */
+export const getCategories = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const categories = await prisma.categories.findMany({
+      where: { UserId: userId },
+      // include: { Expenses: true },
+    });
+
+    res.json(categories);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+/**
+ * @desc Update category
+ * @route PUT /api/categories/:id
+ * @access Private
+ */
 export const updateCategory = async (req, res) => {
-  const userId = req.user.id;
-  const { id } = req.params;
-  const { name, color } = req.body;
-
   try {
-    // Vérifier que la catégorie appartient à l'utilisateur
-    const existingCategory = await prisma.category.findFirst({
-      where: { id, userId }
+    const userId = req.user.id;
+    const categoryId = parseInt(req.params.id);
+
+    const existing = await prisma.categories.findUnique({
+      where: { id: categoryId },
     });
 
-    if (!existingCategory) {
-      return res.status(404).json({ error: 'Catégorie non trouvée' });
+    if (!existing || existing.UserId !== userId) {
+      return res.status(404).json({ message: "Category not found" });
     }
 
-    const category = await prisma.category.update({
-      where: { id },
-      data: { name, color },
+    const { name, budget } = req.body;
+
+    const updated = await prisma.categories.update({
+      where: { id: categoryId },
+      data: {
+        name: name ?? existing.name,
+        budget: budget ? parseFloat(budget) : existing.budget,
+      },
     });
-    res.json(category);
+
+    res.json(updated);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// Supprimer une catégorie
+/**
+ * @desc Delete category
+ * @route DELETE /api/categories/:id
+ * @access Private
+ */
 export const deleteCategory = async (req, res) => {
-  const userId = req.user.id;
-  const { id } = req.params;
-
   try {
-    // Vérifier que la catégorie appartient à l'utilisateur
-    const category = await prisma.category.findFirst({
-      where: { id, userId }
+    const userId = req.user.id;
+    const categoryId = parseInt(req.params.id);
+
+    const existing = await prisma.categories.findUnique({
+      where: { id: categoryId },
+      include: { Expenses: true },
     });
 
-    if (!category) {
-      return res.status(404).json({ error: 'Catégorie non trouvée' });
+    if (!existing || existing.UserId !== userId) {
+      return res.status(404).json({ message: "Category not found" });
     }
 
-    await prisma.category.delete({ where: { id } });
-    res.status(204).send();
+    if (existing.Expenses.length > 0) {
+      return res.status(400).json({ message: "Category in use, cannot delete" });
+    }
+
+    await prisma.categories.delete({
+      where: { id: categoryId },
+    });
+
+    res.json({ message: "Category deleted successfully" });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };

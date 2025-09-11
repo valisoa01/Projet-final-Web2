@@ -22,9 +22,6 @@ import Expense from './Components/Site/Expense';
       <Route path="/profile" element={<Profile/>} />
       <Route path="/settings" element={<Settings/>} />
       
-
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/settings" element={<Settings />} />
       </Routes>
   );
 }
