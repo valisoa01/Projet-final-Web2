@@ -2,7 +2,7 @@ import { LogOut, Bell, Moon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import API from '../../api/axios';
-import Logo from '../../assets/react.svg'; 
+import Logo from '../../assets/favicon.png'; 
 
 const Header = () => {
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ const Header = () => {
           <img src={Logo} alt="App Logo" className="w-full h-full object-contain relative z-10 rounded-full" />
         </div>
         <span className="text-xl font-semibold text-gray-800 dark:text-white">
-          Expense <span className="text-cyan-500">Tracker</span>
+          Plan <span className="text-cyan-500">Tracker</span>
         </span>
       </div>
 

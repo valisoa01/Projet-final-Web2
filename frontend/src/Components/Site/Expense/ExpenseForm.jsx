@@ -1,17 +1,17 @@
 // src/Components/Site/Expense/ExpenseForm.jsx
 import { useState, useEffect } from "react";
 import API from "../../../api/axios";
-import { Upload } from "lucide-react";
+import { Upload, Utensils, Car, Home, Film, ShoppingBag, Lightbulb, HeartPulse, FileText } from "lucide-react";
 
-const categoryEmojis = {
-  Food: "🍔",
-  Transport: "🚗",
-  Housing: "🏠",
-  Entertainment: "🎬",
-  Shopping: "🛍️",
-  Utilities: "💡",
-  Health: "💊",
-  Other: "📝",
+const categoryIcons = {
+  Food: <Utensils className="w-4 h-4 mr-1" />,
+  Transport: <Car className="w-4 h-4 mr-1" />,
+  Housing: <Home className="w-4 h-4 mr-1" />,
+  Entertainment: <Film className="w-4 h-4 mr-1" />,
+  Shopping: <ShoppingBag className="w-4 h-4 mr-1" />,
+  Utilities: <Lightbulb className="w-4 h-4 mr-1" />,
+  Health: <HeartPulse className="w-4 h-4 mr-1" />,
+  Other: <FileText className="w-4 h-4 mr-1" />,
 };
 
 export default function ExpenseForm({ categories, editingExpense, onSuccess, onCancel }) {
@@ -135,13 +135,13 @@ export default function ExpenseForm({ categories, editingExpense, onSuccess, onC
           <div
             key={cat.id}
             onClick={() => handleChange("categoryId", cat.id)}
-            className={`flex-shrink-0 px-3 py-1 rounded-lg cursor-pointer text-sm font-medium border ${
+            className={`flex-shrink-0 flex items-center px-3 py-1 rounded-lg cursor-pointer text-sm font-medium border ${
               formData.categoryId === cat.id
                 ? "bg-blue-600 text-white border-blue-600"
                 : "bg-gray-100 text-gray-800 border-gray-300"
             }`}
           >
-            <span className="mr-1">{categoryEmojis[cat.name] || "📝"}</span>
+            {categoryIcons[cat.name] || <FileText className="w-4 h-4 mr-1" />}
             <span>{cat.name}</span>
           </div>
         ))}

@@ -80,7 +80,7 @@ const Signin = () => {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12 relative z-10">
         <div className="w-full max-w-md bg-indigo-900/30 p-8 rounded-3xl shadow-2xl backdrop-blur-sm">
           <div className="text-center mb-6">
-            <h1 className="text-4xl font-bold text-cyan-300 mb-2">ExpenseTracker</h1>
+            <h1 className="text-4xl font-bold text-cyan-300 mb-2">PlanTracker</h1>
             <p className="text-white text-sm">Sign in to continue</p>
           </div>
 
