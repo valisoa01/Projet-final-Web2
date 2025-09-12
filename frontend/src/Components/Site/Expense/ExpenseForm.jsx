@@ -90,7 +90,6 @@ export default function ExpenseForm({ categories, editingExpense, onSuccess, onC
         });
       }
       
-      // Reset form
       setFormData({
         amount: "",
         description: "",
@@ -102,8 +101,7 @@ export default function ExpenseForm({ categories, editingExpense, onSuccess, onC
       });
       setReceipt(null);
       setError("");
-      
-      // Call success callback
+
       onSuccess();
       
     } catch (err) {

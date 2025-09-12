@@ -93,9 +93,9 @@ const DashboardContent = ({ className, refreshKey }) => {
     <div className={`p-6 flex flex-col gap-8 ${className}`}>
       {error && <div className="bg-red-50 border border-red-400 p-4 rounded-lg flex items-center gap-2"><AlertCircle className="text-red-600"/> {error}</div>}
 
-      {/* Stats Cards */}
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Income */}
+
         <div className="bg-blue-900 text-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-transform transform hover:scale-105 cursor-pointer">
           <div className="flex justify-between items-center mb-3">
             <DollarSign className="w-8 h-8"/>
@@ -105,7 +105,7 @@ const DashboardContent = ({ className, refreshKey }) => {
           <p className="text-2xl font-bold mt-1">${totalIncome.toFixed(2)}</p>
         </div>
 
-        {/* Expenses */}
+  
         <div className="bg-blue-800 text-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-transform transform hover:scale-105 cursor-pointer">
           <div className="flex justify-between items-center mb-3">
             <CreditCard className="w-8 h-8"/>
@@ -115,7 +115,7 @@ const DashboardContent = ({ className, refreshKey }) => {
           <p className="text-2xl font-bold mt-1">${totalExpenses.toFixed(2)}</p>
         </div>
 
-        {/* Balance */}
+
         <div className={`p-6 rounded-2xl shadow-md hover:shadow-xl transition-transform transform hover:scale-105 cursor-pointer ${remainingBalance >=0 ? "bg-green-600 text-white" : "bg-red-600 text-white"}`}>
           <div className="flex justify-between items-center mb-3">
             <PieChart className="w-8 h-8"/>
@@ -126,9 +126,8 @@ const DashboardContent = ({ className, refreshKey }) => {
         </div>
       </div>
 
-      {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Pie */}
+
         <div className="bg-white p-6 rounded-2xl shadow-md">
           <h3 className="text-lg font-semibold text-blue-900 mb-4">Expenses by Category</h3>
           <div className="h-80">
@@ -136,7 +135,6 @@ const DashboardContent = ({ className, refreshKey }) => {
           </div>
         </div>
 
-        {/* Bar */}
         <div className="bg-white p-6 rounded-2xl shadow-md">
           <h3 className="text-lg font-semibold text-blue-900 mb-4">Monthly Spending</h3>
           <div className="h-80">

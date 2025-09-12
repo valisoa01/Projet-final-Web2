@@ -30,7 +30,6 @@ const Header = () => {
   return (
     <div className="bg-white dark:bg-gray-900 shadow-md h-[10vh] w-full flex items-center fixed z-50">
       
-      {/* Logo + App Name */}
       <div className="w-[20%] flex items-center pl-6">
         <div className="w-12 h-12 relative mr-2">
           <div className="absolute w-4 h-4 bg-cyan-300 rounded-full top-1 left-1 animate-ping"></div>
@@ -42,9 +41,7 @@ const Header = () => {
         </span>
       </div>
 
-      {/* Action Buttons */}
       <div className="w-[80%] flex items-center justify-end pr-6 gap-4">
-        {/* Notifications */}
         <div className="relative">
           <button className="w-10 h-10 flex items-center justify-center border border-cyan-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
             <Bell className="w-5 h-5 text-cyan-500" />
@@ -52,7 +49,6 @@ const Header = () => {
           </button>
         </div>
 
-        {/* Logout */}
         <div className="relative">
           <button
             onClick={() => setShowLogoutConfirm(true)}
@@ -62,7 +58,6 @@ const Header = () => {
           </button>
         </div>
 
-        {/* Dark Mode Toggle */}
         <div className="relative">
           <button className="w-10 h-10 flex items-center justify-center border border-cyan-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
             <Moon className="w-5 h-5 text-cyan-500" />
@@ -70,7 +65,6 @@ const Header = () => {
         </div>
       </div>
 
-      {/* 🔹 Logout Confirmation Modal */}
       {showLogoutConfirm && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 w-80">

@@ -49,8 +49,7 @@ const Profile = () => {
       <Header />
       <div className="flex flex-1 min-h-0">
         <Sidebar />
-        
-        {/* Zone de profil centrée mais décalée vers la droite */}
+
         <div className="flex-1 flex justify-start items-center p-6 overflow-auto ml-[15vw]">
           {error && (
             <div className="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-400 rounded-lg p-4 mb-4 w-full max-w-5xl">
@@ -61,7 +60,7 @@ const Profile = () => {
           {profile && (
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg w-full max-w-5xl flex hover:shadow-2xl transition-shadow duration-300 ml-20">
               
-              {/* Photo de profil et statut */}
+             
               <div className="flex-none w-1/3 p-6 flex flex-col items-center justify-center bg-cyan-50 dark:bg-cyan-900 rounded-l-xl gap-4">
                 {profile.profileUrl ? (
                   <img
@@ -80,7 +79,7 @@ const Profile = () => {
                 </div>
               </div>
 
-              {/* Informations utilisateur */}
+       
               <div className="flex-1 p-6 flex flex-col justify-center gap-6">
                 <h2 className="text-3xl font-bold text-gray-800 dark:text-white">{profile.username}</h2>
                 <p className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
@@ -105,7 +104,7 @@ const Profile = () => {
                   </div>
                 </div>
 
-                {/* Actions */}
+               
                 <div className="flex gap-4 mt-4">
                   <button 
                     onClick={() => window.location.href='/settings'}

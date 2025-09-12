@@ -60,7 +60,7 @@ export default function ExpensePage({ onChange }) {
 
   const handleSuccess = () => {
     setEditingExpense(null);
-    // Add a small delay to ensure backend processes the data
+
     setTimeout(() => {
       fetchExpenses();
     }, 300);

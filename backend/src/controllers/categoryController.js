@@ -2,11 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-/**
- * @desc Create category
- * @route POST /api/categories
- * @access Private
- */
+
 export const createCategory = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -31,11 +27,7 @@ export const createCategory = async (req, res) => {
   }
 };
 
-/**
- * @desc Get all categories
- * @route GET /api/categories
- * @access Private
- */
+
 export const getCategories = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -53,11 +45,7 @@ export const getCategories = async (req, res) => {
   }
 };
 
-/**
- * @desc Update category
- * @route PUT /api/categories/:id
- * @access Private
- */
+
 export const updateCategory = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -88,11 +76,6 @@ export const updateCategory = async (req, res) => {
   }
 };
 
-/**
- * @desc Delete category
- * @route DELETE /api/categories/:id
- * @access Private
- */
 export const deleteCategory = async (req, res) => {
   try {
     const userId = req.user.id;
