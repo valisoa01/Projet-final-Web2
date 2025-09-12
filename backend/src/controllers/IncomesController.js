@@ -2,8 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const IncomesController = {
-  // Créer un revenu
-  createIncome: async (req, res) => {
+   createIncome: async (req, res) => {
     try {
       const { amount, date, type, description } = req.body;
       if (!amount || parseFloat(amount) <= 0)
@@ -17,7 +16,7 @@ const IncomesController = {
           date: new Date(date),
           type: type || null,
           description: description || null,
-          userId: req.user.id,  // important : correspond à ton utilisateur connecté
+          userId: req.user.id,  
         },
       });
 
@@ -28,8 +27,7 @@ const IncomesController = {
     }
   },
 
-  // Lister les revenus
-  getIncomes: async (req, res) => {
+   getIncomes: async (req, res) => {
     try {
       const incomes = await prisma.incomes.findMany({
         where: { userId: req.user.id },
