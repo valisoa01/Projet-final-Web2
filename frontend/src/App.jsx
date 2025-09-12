@@ -1,5 +1,6 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-
+// src/App.js
+import { useState } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Signup from './Components/Auth/Signup';
 import Home from './pages/Home';
 import Signin from './Components/Auth/Signin';
@@ -7,23 +8,48 @@ import Dashboard from './Components/Site/Dashboard';
 import Profile from './Components/Profile/Profile';
 import Settings from './Components/Profile/Settings';
 import Incomes from './Components/Site/Incomes';
-import Expense from './Components/Site/Expense';
+import ExpensePage from "./Components/Site/Expense/ExpensePage";
+import CategoryPage from "./Components/Site/Category/CategoryPage";
+function App() {
+  const [refreshKey, setRefreshKey] = useState(0);
 
- function App() {
+  const triggerRefresh = () => {
+    console.log("Triggering global refresh");
+    setRefreshKey(prev => prev + 1);
+  };
+
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/Signin" replace />} />
-      <Route path="/incomes" element={<Incomes />} />
-      <Route path="/expense" element={<Expense />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/Signin" element={<Signin />} />
-      <Route path="/home" element={<Home />} />
-      <Route path="/dashboard" element={<Dashboard />} /> 
-      <Route path="/profile" element={<Profile/>} />
-      <Route path="/settings" element={<Settings/>} />
-      
+    <div>
+      <Routes>
+        <Route path="/" element={<Navigate to="/signin" replace />} />
+        <Route path="/signin" element={<Signin />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route 
+          path="/dashboard" 
+          element={<Dashboard refreshKey={refreshKey} />} 
+        />
+        <Route path="/home" element={<Home />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/incomes" element={<Incomes />} />
+        <Route 
+          path="/expense" 
+          element={<ExpensePage onChange={triggerRefresh} />} 
+        />
+        <Route 
+          path="/category" 
+          element={<CategoryPage onChange={triggerRefresh} />} 
+        />
+        <Route path="*" element={<h1>404 : Page non trouvée</h1>} />
       </Routes>
+    </div>
   );
 }
 
 export default App;
+
+
+ 
+
+
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsImVtYWlsIjoibWlrb2phbnlhdm9AZ21haWwuY29tIiwidXNlcm5hbWUiOiJtaWtvamEiLCJpYXQiOjE3NTc2MDUzNTYsImV4cCI6MTc1ODIxMDE1Nn0.Rbb80jr-mH_TEbQl_tV9HUAv6Az9YZJz0OF6qWa8OLE

@@ -33,18 +33,20 @@ model Categories {
 }
 
 model Expenses {
-  id          Int        @id @default(autoincrement())
-  amount      Decimal    @db.Decimal
-  date        DateTime   @db.Timestamptz(6)
-  description String?    @db.VarChar(255)
-  type        String?    @db.VarChar(255)
-  receipt     String?    @db.VarChar(255)
-  createdAt   DateTime   @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime   @default(now()) @updatedAt @db.Timestamptz(6)
-  UserId      Int
-  CategoryId  Int
-  Categories  Categories @relation(fields: [CategoryId], references: [id])
-  Users       Users      @relation(fields: [UserId], references: [id])
+  id         Int       @id @default(autoincrement())
+  amount     Float
+  description String?
+  type       String    @default("one-time")
+  date       DateTime? // Pour les dépenses ponctuelles
+  startDate  DateTime? // Pour les dépenses récurrentes
+  endDate    DateTime? // Optionnel pour les récurrentes
+  receipt    String?
+  UserId     Int
+  CategoryId Int
+  User       User      @relation(fields: [UserId], references: [id])
+  Categories Categories @relation(fields: [CategoryId], references: [id])
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 model Users {

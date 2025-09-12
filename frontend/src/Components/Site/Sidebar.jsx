@@ -2,6 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
  import API from "../../api/axios";
+ import { MdCategory } from "react-icons/md";
  
  const Sidebar = () => {
   const navigate = useNavigate();
@@ -84,6 +85,15 @@ import { useEffect, useState } from 'react';
               >
                 <Briefcase className="w-5 h-5 text-cyan-400" />
                 Incomes
+              </button>
+            </li> 
+            <li>
+              <button
+                onClick={() => navigate('/category')}
+                className="flex items-center gap-3 p-3 text-gray-700 dark:text-gray-300 hover:bg-cyan-100 dark:hover:bg-cyan-700/30 rounded-xl transition-all duration-300 w-full text-left"
+              >
+                <MdCategory className="w-5 h-5 text-cyan-400" />
+                Category
               </button>
             </li>
           </ul>

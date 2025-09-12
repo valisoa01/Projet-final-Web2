@@ -1,8 +1,9 @@
+// Components/Site/Dashboard.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import Content from "./Content";
+import DashboardContent from "./DashoardContent";
 import API from "../../api/axios";
 
 const Dashboard = () => {
@@ -24,22 +25,21 @@ const Dashboard = () => {
           email: localStorage.getItem("userEmail"),
           username: localStorage.getItem("username"),
         };
-        
+
         if (!userData.id || !userData.email) {
-          const response = await API.get('/users/me');
+          const response = await API.get("/users/me");
           const userInfo = response.data;
-          
-          localStorage.setItem('userId', userInfo.id);
-          localStorage.setItem('userEmail', userInfo.email);
-          localStorage.setItem('username', userInfo.username);
-          
+
+          localStorage.setItem("userId", userInfo.id);
+          localStorage.setItem("userEmail", userInfo.email);
+          localStorage.setItem("username", userInfo.username);
+
           setUser(userInfo);
         } else {
           setUser(userData);
         }
-        
       } catch (error) {
-        console.error('Auth check failed:', error);
+        console.error("Auth check failed:", error);
         localStorage.clear();
         navigate("/signin");
       } finally {
@@ -60,19 +60,13 @@ const Dashboard = () => {
 
   return (
     <div className="flex flex-col h-screen w-full bg-gray-100">
-      {/* Header fixed on top */}
       <Header className="flex-none" />
-
-      {/* Main area */}
       <div className="flex flex-1 min-h-0">
-        {/* Sidebar with fixed width but not fixed position */}
         <div className="w-64 flex-shrink-0">
           <Sidebar />
         </div>
-
-        {/* Content takes remaining space, scrollable */}
-        <div className="flex-1 h-full overflow-auto">
-          <Content />
+        <div className="flex-1 h-full overflow-auto mt-[15vh]">
+          <DashboardContent />
         </div>
       </div>
     </div>

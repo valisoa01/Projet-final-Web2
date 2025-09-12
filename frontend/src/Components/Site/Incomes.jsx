@@ -1,7 +1,7 @@
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import ContentIncomes from "./ContentIncomes";
-import Content from "./Content"
+import Content from "./DashoardContent"
 
 const Incomes = () => {
     return (
