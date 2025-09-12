@@ -1,12 +1,29 @@
 import React from "react";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
+import API from "../../../api/axios";
 
-const formatDate = (d) => {
-  if (!d) return "—";
-  try { return new Date(d).toLocaleDateString(); } catch (e) { return "—"; }
-};
+const CategoryList = ({ categories, onEdit, refreshCategories }) => {
 
-const CategoryList = ({ categories = [], onEdit, onDelete }) => {
+  const handleDelete = async (id) => {
+    if (!window.confirm("Do you really want to delete this category?")) return;
+    try {
+      const token = localStorage.getItem("token");
+      await API.delete(`/categories/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      
+      if (refreshCategories) refreshCategories();
+    } catch (err) {
+      console.error(err.response?.data || err);
+      alert("Erreur lors de la suppression de la catégorie");
+    }
+  };
+
+  const formatDate = (d) => {
+    if (!d) return "—";
+    try { return new Date(d).toLocaleDateString(); } catch (e) { return "—"; }
+  };
+
   if (!Array.isArray(categories)) {
     console.warn("CategoryList: 'categories' is not an array", categories);
     return <div className="text-red-600">Erreur: données invalides</div>;
@@ -51,8 +68,7 @@ const CategoryList = ({ categories = [], onEdit, onDelete }) => {
                   onClick={(e) => {
                     e.stopPropagation();
                     console.log("CategoryList: delete clicked", cat.id ?? cat._id);
-                    if (typeof onDelete === "function") onDelete(cat.id ?? cat._id);
-                    else console.warn("onDelete not provided");
+                    handleDelete(cat.id ?? cat._id);
                   }}
                   className="p-2 rounded-lg hover:bg-red-200 transition-all"
                 >

@@ -51,6 +51,7 @@ model Expenses {
   type        String?    @db.VarChar(255)
   description String?    @db.VarChar(255)
   receipt     String?    @db.VarChar(255)
+  colonne     String?    @db.VarChar(255) 
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   userId      Int
