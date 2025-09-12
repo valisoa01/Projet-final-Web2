@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-
+// CREATE
 export const createCategory = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -16,7 +16,7 @@ export const createCategory = async (req, res) => {
       data: {
         name,
         budget: parseFloat(budget),
-        userId, // ✅ corrigé
+        userId,
       },
     });
 
@@ -27,13 +27,13 @@ export const createCategory = async (req, res) => {
   }
 };
 
-
+// READ
 export const getCategories = async (req, res) => {
   try {
     const userId = req.user.id;
 
     const categories = await prisma.categories.findMany({
-      where: { userId }, // ✅ corrigé
+      where: { userId },
       include: { Expenses: true },
       orderBy: { createdAt: "desc" },
     });
@@ -45,11 +45,15 @@ export const getCategories = async (req, res) => {
   }
 };
 
-
+// UPDATE
 export const updateCategory = async (req, res) => {
   try {
     const userId = req.user.id;
-    const categoryId = parseInt(req.params.id);
+    const categoryId = parseInt(req.params.id, 10);
+
+    if (isNaN(categoryId)) {
+      return res.status(400).json({ message: "Invalid category ID" });
+    }
 
     const existing = await prisma.categories.findUnique({
       where: { id: categoryId },
@@ -75,11 +79,17 @@ export const updateCategory = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
-
 export const deleteCategory = async (req, res) => {
   try {
+    console.log("🟢 req.params:", req.params);
+    console.log("🟢 req.user:", req.user);
+
     const userId = req.user.id;
-    const categoryId = parseInt(req.params.id);
+    const categoryId = parseInt(req.params.id, 10);
+
+    if (isNaN(categoryId)) {
+      return res.status(400).json({ message: "Invalid category ID" });
+    }
 
     const existing = await prisma.categories.findUnique({
       where: { id: categoryId },
@@ -104,3 +114,4 @@ export const deleteCategory = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
