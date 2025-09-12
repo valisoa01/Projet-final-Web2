@@ -1,32 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { Pie, Bar } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from "chart.js";
+import { Pie, Line } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, LineElement, CategoryScale, LinearScale, Tooltip, Legend, PointElement } from "chart.js";
+import { useNavigate } from "react-router-dom";
 import API from "../../api/axios";
-import { CreditCard, DollarSign, PieChart, Calendar, TrendingUp, AlertCircle } from "lucide-react";
+import { CreditCard, DollarSign, PieChart, TrendingUp, AlertCircle } from "lucide-react";
 
-ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
+ChartJS.register(ArcElement, LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const DashboardContent = ({ className, refreshKey }) => {
+  const navigate = useNavigate();
   const [stats, setStats] = useState({ totalIncome: 0, totalExpenses: 0, remainingBalance: 0 });
-  const [pieChartData, setPieChartData] = useState({ labels: ["No expenses yet"], datasets: [{ data: [1], backgroundColor: ["#E5E7EB"] }] });
-  const [barChartData, setBarChartData] = useState({ labels: ["No data"], datasets: [{ label: "Monthly Spending", data: [0], backgroundColor: "#E5E7EB" }] });
+  const [pieChartData, setPieChartData] = useState({ labels: [], datasets: [{ data: [], backgroundColor: [] }] });
+  const [lineChartData, setLineChartData] = useState({ labels: [], datasets: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedMonth, setSelectedMonth] = useState(`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`);
 
-  const months = [
-    { value: 1, label: "January" }, { value: 2, label: "February" }, { value: 3, label: "March" },
-    { value: 4, label: "April" }, { value: 5, label: "May" }, { value: 6, label: "June" },
-    { value: 7, label: "July" }, { value: 8, label: "August" }, { value: 9, label: "September" },
-    { value: 10, label: "October" }, { value: 11, label: "November" }, { value: 12, label: "December" }
-  ];
-
-  const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i);
-
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        setLoading(true); setError("");
+        setLoading(true);
+        setError("");
+
         const [statsRes, pieRes, barRes] = await Promise.all([
           API.get(`/dashboard/stats?month=${selectedMonth}`),
           API.get(`/dashboard/pie-chart?month=${selectedMonth}`),
@@ -39,38 +34,52 @@ const DashboardContent = ({ className, refreshKey }) => {
           remainingBalance: Number(statsRes.data.remainingBalance || 0)
         });
 
-        // Pie Chart
-        const pieColors = ["#1E3A8A","#2563EB","#3B82F6","#60A5FA","#93C5FD","#BFDBFE"];
+        // Pie chart
+        const pastelColors = ["#81D4FA", "#4FC3F7", "#4DD0E1", "#26C6DA", "#80CBC4", "#A5D6A7", "#FFF176"];
         if (pieRes.data?.labels?.length > 0) {
+          const labels = pieRes.data.labels;
+          const data = pieRes.data.datasets[0].data.map(Number);
+          const colors = labels.map((_, i) => pastelColors[i % pastelColors.length]);
+
           setPieChartData({
-            labels: pieRes.data.labels,
+            labels,
             datasets: [{
-              data: pieRes.data.datasets[0].data.map(Number),
-              backgroundColor: pieColors.slice(0, pieRes.data.labels.length),
+              data,
+              backgroundColor: colors,
               borderColor: "#fff",
               borderWidth: 2
             }]
           });
         }
 
-        // Bar Chart
+        // Line chart
         if (barRes.data?.labels?.length > 0) {
-          setBarChartData({
-            labels: barRes.data.labels,
-            datasets: [{
-              label: "Monthly Spending",
-              data: barRes.data.datasets[0].data.map(Number),
-              backgroundColor: "#2563EB",
-              borderRadius: 6,
-              borderColor: "#1E40AF",
-              borderWidth: 1
-            }]
+          const labels = barRes.data.labels;
+          const data = barRes.data.datasets[0].data.map(Number);
+
+          setLineChartData({
+            labels,
+            datasets: [
+              {
+                label: "Monthly Spending",
+                data,
+                borderColor: "#4DD0E1",
+                backgroundColor: "rgba(77, 208, 225, 0.2)",
+                fill: true,
+                tension: 0.4,          // lissage courbe
+                pointRadius: 5,
+                pointBackgroundColor: "#26C6DA",
+                pointHoverRadius: 6
+              }
+            ]
           });
         }
 
       } catch (err) {
         setError(err.response?.data?.message || "Failed to load dashboard data");
-      } finally { setLoading(false); }
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchDashboardData();
@@ -82,8 +91,8 @@ const DashboardContent = ({ className, refreshKey }) => {
     return (
       <div className={`flex justify-center items-center h-96 ${className}`}>
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-blue-800 font-medium">Loading dashboard...</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-cyan-400 mx-auto"></div>
+          <p className="mt-4 text-cyan-700 font-medium">Loading dashboard...</p>
         </div>
       </div>
     );
@@ -93,54 +102,45 @@ const DashboardContent = ({ className, refreshKey }) => {
     <div className={`p-6 flex flex-col gap-8 ${className}`}>
       {error && <div className="bg-red-50 border border-red-400 p-4 rounded-lg flex items-center gap-2"><AlertCircle className="text-red-600"/> {error}</div>}
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Income */}
-        <div className="bg-blue-900 text-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-transform transform hover:scale-105 cursor-pointer">
+        <div onClick={() => navigate("/incomes")} className="bg-cyan-300 text-cyan-900 p-6 rounded-2xl shadow-md hover:shadow-xl transition-transform transform hover:scale-105 cursor-pointer">
           <div className="flex justify-between items-center mb-3">
             <DollarSign className="w-8 h-8"/>
             <TrendingUp className="w-5 h-5"/>
           </div>
           <p className="font-medium">Total Income</p>
-          <p className="text-2xl font-bold mt-1">${totalIncome.toFixed(2)}</p>
+          <p className="text-2xl font-bold mt-1">{totalIncome.toFixed(2)} Ar</p>
         </div>
-
-        {/* Expenses */}
-        <div className="bg-blue-800 text-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-transform transform hover:scale-105 cursor-pointer">
+        <div onClick={() => navigate("/expense")} className="bg-cyan-200 text-cyan-900 p-6 rounded-2xl shadow-md hover:shadow-xl transition-transform transform hover:scale-105 cursor-pointer">
           <div className="flex justify-between items-center mb-3">
             <CreditCard className="w-8 h-8"/>
             <TrendingUp className="w-5 h-5"/>
           </div>
           <p className="font-medium">Total Expenses</p>
-          <p className="text-2xl font-bold mt-1">${totalExpenses.toFixed(2)}</p>
+          <p className="text-2xl font-bold mt-1">{totalExpenses.toFixed(2)} Ar</p>
         </div>
-
-        {/* Balance */}
-        <div className={`p-6 rounded-2xl shadow-md hover:shadow-xl transition-transform transform hover:scale-105 cursor-pointer ${remainingBalance >=0 ? "bg-green-600 text-white" : "bg-red-600 text-white"}`}>
+        <div onClick={() => navigate("/dashboard")} className={`p-6 rounded-2xl shadow-md hover:shadow-xl transition-transform transform hover:scale-105 cursor-pointer ${remainingBalance >= 0 ? "bg-green-400 text-white" : "bg-red-400 text-white"}`}>
           <div className="flex justify-between items-center mb-3">
             <PieChart className="w-8 h-8"/>
             <TrendingUp className="w-5 h-5"/>
           </div>
           <p className="font-medium">Balance</p>
-          <p className="text-2xl font-bold mt-1">${remainingBalance.toFixed(2)}</p>
+          <p className="text-2xl font-bold mt-1">{remainingBalance.toFixed(2)} Ar</p>
         </div>
       </div>
 
-      {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Pie */}
         <div className="bg-white p-6 rounded-2xl shadow-md">
-          <h3 className="text-lg font-semibold text-blue-900 mb-4">Expenses by Category</h3>
+          <h3 className="text-lg font-semibold text-cyan-900 mb-4">Expenses by Category</h3>
           <div className="h-80">
             <Pie data={pieChartData} options={{ responsive:true, maintainAspectRatio:false }} />
           </div>
         </div>
 
-        {/* Bar */}
         <div className="bg-white p-6 rounded-2xl shadow-md">
-          <h3 className="text-lg font-semibold text-blue-900 mb-4">Monthly Spending</h3>
+          <h3 className="text-lg font-semibold text-cyan-900 mb-4">Monthly Spending</h3>
           <div className="h-80">
-            <Bar data={barChartData} options={{ responsive:true, maintainAspectRatio:false }} />
+            <Line data={lineChartData} options={{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:true}} }} />
           </div>
         </div>
       </div>
