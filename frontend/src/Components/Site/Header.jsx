@@ -1,6 +1,6 @@
  import { LogOut, Bell, Moon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import API from '../../api/axios';
 import Logo from '../../assets/react.svg'; 
 
@@ -10,11 +10,23 @@ const Header = () => {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [balanceRemaining, setBalanceRemaining] = useState(0);
+  const notifRef = useRef(null);
 
   // Récupération du nom d'utilisateur
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
     if (storedUsername) setUsername(storedUsername);
+  }, []);
+
+  // Gestion clic en dehors pour fermer la notif
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (notifRef.current && !notifRef.current.contains(event.target)) {
+        setShowNotification(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   // Déconnexion
@@ -38,7 +50,7 @@ const Header = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setBalanceRemaining(Number(res.data.remainingBalance || 0));
-      setShowNotification(true);
+      setShowNotification((prev) => !prev);
     } catch (err) {
       console.error('Error fetching balance:', err);
       setBalanceRemaining(0);
@@ -63,7 +75,7 @@ const Header = () => {
       {/* Actions */}
       <div className="w-[80%] flex items-center justify-end pr-6 gap-4">
         {/* Notification */}
-        <div className="relative">
+        <div className="relative" ref={notifRef}>
           <button
             onClick={handleNotificationClick}
             className="w-10 h-10 flex items-center justify-center border border-cyan-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -71,6 +83,27 @@ const Header = () => {
             <Bell className="w-5 h-5 text-cyan-500" />
             <span className="absolute top-1 right-1 block w-2 h-2 rounded-full bg-red-500"></span>
           </button>
+
+          {/* Notification Dropdown animé */}
+          {showNotification && (
+            <div className="absolute top-full right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 border border-gray-200 dark:border-gray-700
+                            transform opacity-0 scale-95 animate-slide-fade-in origin-top-right">
+              <h2 className="text-md font-semibold text-gray-800 dark:text-white mb-2">
+                Notifications
+              </h2>
+              <p className="text-gray-700 dark:text-gray-300">
+                Il vous reste : <span className="font-bold">{balanceRemaining.toFixed(2)} Ar</span>
+              </p>
+              <div className="flex justify-end mt-2">
+                <button
+                  onClick={() => setShowNotification(false)}
+                  className="px-3 py-1 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white text-sm"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Logout */}
@@ -116,27 +149,18 @@ const Header = () => {
         </div>
       )}
 
-      {/* Notification Modal */}
-      {showNotification && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 w-80">
-            <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
-              Notifications
-            </h2>
-            <p className="text-gray-700 dark:text-gray-300">
-              Il vous reste : <span className="font-bold">{balanceRemaining.toFixed(2)} Ar</span>
-            </p>
-            <div className="flex justify-end mt-4">
-              <button
-                onClick={() => setShowNotification(false)}
-                className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Tailwind animation keyframes */}
+      <style>
+        {`
+          @keyframes slide-fade-in {
+            0% { transform: translateY(-10px) scale(0.95); opacity: 0; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+          }
+          .animate-slide-fade-in {
+            animation: slide-fade-in 0.2s ease-out forwards;
+          }
+        `}
+      </style>
     </div>
   );
 };
