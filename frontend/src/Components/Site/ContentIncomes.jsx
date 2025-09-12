@@ -33,8 +33,6 @@ const ContentIncomes = () => {
     direction: "ascending",
   });
 
-  const [deleteTarget, setDeleteTarget] = useState(null); // Pour modal de suppression
-
   const incomesColumns = [
     { name: "Id", key: "id" },
     { name: "Amount", key: "amount" },
@@ -75,9 +73,17 @@ const ContentIncomes = () => {
     setIsOtherType(false);
   };
 
-  // Nouveau : déclenche modal de suppression
-  const handleDeleteClick = (income) => {
-    setDeleteTarget(income);
+  const handleDelete = async (id) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    if (!window.confirm("Do you really want to delete this income?")) return;
+    try {
+      await axios.delete(`http://localhost:5000/api/incomes/${id}/delete`, { headers: { Authorization: `Bearer ${token}` } });
+      setIncomes(prev => prev.filter(i => i.id !== id));
+    } catch (error) {
+      console.error("Delete error:", error.response?.data || error);
+      alert(`Error: ${error.response?.data?.message || error.message}`);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -141,12 +147,66 @@ const ContentIncomes = () => {
 
       {/* Filters */}
       <div className="w-full bg-white rounded-2xl p-6 mb-6 shadow-lg grid grid-cols-1 sm:grid-cols-5 gap-6">
-        {/* ...filters inchangés */}
+        <div>
+          <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+            <Calendar className="w-4 h-4 text-cyan-600" /> Month
+          </label>
+          <select name="month" value={filters.month} onChange={handleFilterChange} className="w-full border border-cyan-200 rounded-lg p-2 focus:ring-2 focus:ring-cyan-400">
+            <option value="">All</option>
+            {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
+              <option key={m} value={m}>{new Date(0, m - 1).toLocaleString("default", { month: "long" })}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+            <Clock className="w-4 h-4 text-cyan-600" /> Year
+          </label>
+          <select name="year" value={filters.year} onChange={handleFilterChange} className="w-full border border-cyan-200 rounded-lg p-2 focus:ring-2 focus:ring-cyan-400">
+            <option value="">All</option>
+            {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i).map(y => (<option key={y} value={y}>{y}</option>))}
+          </select>
+        </div>
+        <div>
+          <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+            <Tag className="w-4 h-4 text-cyan-600" /> Type
+          </label>
+          <select name="type" value={filters.type} onChange={handleFilterChange} className="w-full border border-cyan-200 rounded-lg p-2 focus:ring-2 focus:ring-cyan-400">
+            <option value="">All</option>
+            {uniqueTypes.map(type => <option key={type} value={type}>{type}</option>)}
+          </select>
+        </div>
+        <div>
+          <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+            <DollarSign className="w-4 h-4 text-cyan-600" /> Min
+          </label>
+          <input type="number" name="minAmount" value={filters.minAmount} onChange={handleFilterChange} placeholder="Min" className="w-full border border-cyan-200 rounded-lg p-2 focus:ring-2 focus:ring-cyan-400"/>
+        </div>
+        <div>
+          <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+            <Filter className="w-4 h-4 text-cyan-600" /> Max
+          </label>
+          <input type="number" name="maxAmount" value={filters.maxAmount} onChange={handleFilterChange} placeholder="Max" className="w-full border border-cyan-200 rounded-lg p-2 focus:ring-2 focus:ring-cyan-400"/>
+        </div>
       </div>
 
-      {/* Summary Tickets */}
+      {/* Summary Tickets adoucis */}
       <div className="w-full grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-        {/* ...tickets inchangés */}
+        <div className="bg-cyan-400 text-white rounded-2xl shadow-md p-6 flex flex-col items-center">
+          <DollarSign className="w-8 h-8 mb-2"/>
+          <p className="font-semibold">Total Income</p>
+          <p className="text-lg">{totalAmount.toFixed(2)} Ar</p>
+        </div>
+        <div className="bg-cyan-300 text-white rounded-2xl shadow-md p-6 flex flex-col items-center">
+          <Coins className="w-8 h-8 mb-2"/>
+          <p className="font-semibold">Count</p>
+          <p className="text-lg">{incomeCount}</p>
+        </div>
+        <div className="bg-cyan-200 text-white rounded-2xl shadow-md p-6 flex flex-col items-center">
+          <BarChart2 className="w-8 h-8 mb-2"/>
+          <p className="font-semibold">Latest</p>
+          <p className="text-lg">{latestDate}</p>
+        </div>
       </div>
 
       {/* Table */}
@@ -171,7 +231,7 @@ const ContentIncomes = () => {
               <td className="p-4 text-center text-gray-700">{income.createdAt?.split("T")[0]}</td>
               <td className="p-4 text-center flex justify-center gap-2">
                 <button className="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded-md text-sm" onClick={() => handleEdit(income)}>Edit</button>
-                <button className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm" onClick={() => handleDeleteClick(income)}>Delete</button>
+                <button className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm" onClick={() => handleDelete(income.id)}>Delete</button>
               </td>
             </tr>
           ))}
@@ -186,49 +246,59 @@ const ContentIncomes = () => {
       {isFormOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-8 w-full max-w-lg">
-            {/* Formulaire inchangé */}
+            <h2 className="text-2xl font-bold mb-4">{editingIncomeId ? 'Edit Income' : 'Add Income'}</h2>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <input type="number" name="amount" placeholder="Amount" value={formData.amount} onChange={handleChange} className="border rounded-lg p-2" required />
+              <input type="date" name="date" value={formData.date} onChange={handleChange} className="border rounded-lg p-2" required />
+
+              {/* Type avec option Other */}
+              <div>
+                <label>Type</label>
+                {!isOtherType ? (
+                  <select
+                    name="type"
+                    value={formData.type}
+                    onChange={(e) => {
+                      if (e.target.value === 'Other') {
+                        setIsOtherType(true);
+                        setFormData({ ...formData, type: '' });
+                      } else {
+                        setFormData({ ...formData, type: e.target.value });
+                      }
+                    }}
+                    className="w-full border rounded-lg p-2"
+                    required
+                  >
+                    <option value="">Select type</option>
+                    {uniqueTypes.map((type) => <option key={type} value={type}>{type}</option>)}
+                    <option value="Other">Other</option>
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    name="type"
+                    value={formData.type}
+                    onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                    placeholder="Enter new type"
+                    className="w-full border rounded-lg p-2"
+                    required
+                  />
+                )}
+                {isOtherType && (
+                  <button type="button" className="text-sm text-cyan-600 mt-1" onClick={() => setIsOtherType(false)}>Choose from existing types</button>
+                )}
+              </div>
+
+              <input type="text" name="description" placeholder="Description" value={formData.description} onChange={handleChange} className="border rounded-lg p-2" />
+
+              <div className="flex justify-end gap-2 mt-2">
+                <button type="button" className="px-4 py-2 bg-gray-400 rounded" onClick={() => setIsFormOpen(false)}>Cancel</button>
+                <button type="submit" className="px-4 py-2 bg-cyan-600 text-white rounded">{editingIncomeId ? 'Save' : 'Add'}</button>
+              </div>
+            </form>
           </div>
         </div>
       )}
-
-      {/* Modal de suppression stylisé */}
-      {deleteTarget && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-lg">
-            <h3 className="text-xl font-bold mb-4 text-red-600">Confirm Delete</h3>
-            <p className="mb-6">Are you sure you want to delete this income of <strong>{deleteTarget.amount} Ar</strong>?</p>
-            <div className="flex justify-end gap-4">
-              <button
-                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-                onClick={() => setDeleteTarget(null)}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                onClick={async () => {
-                  try {
-                    const token = localStorage.getItem("token");
-                    if (!token) return;
-                    await axios.delete(`http://localhost:5000/api/incomes/${deleteTarget.id}/delete`, {
-                      headers: { Authorization: `Bearer ${token}` },
-                    });
-                    setIncomes(prev => prev.filter(i => i.id !== deleteTarget.id));
-                  } catch (error) {
-                    console.error("Delete error:", error.response?.data || error);
-                    alert(`Error: ${error.response?.data?.message || error.message}`);
-                  } finally {
-                    setDeleteTarget(null);
-                  }
-                }}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
     </div>
   );
 };
