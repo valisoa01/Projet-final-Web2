@@ -39,26 +39,46 @@ const incomesController = {
         userId: req.user.id,
       };
 
-      // Filtre par année / mois
+      // ---- Filtre par année ----
       if (year) {
         filters.date = {
+          ...(filters.date || {}),
           gte: new Date(`${year}-01-01`),
-          lte: new Date(`${year}-12-31`),
+          lte: new Date(`${year}-12-31T23:59:59`)
         };
       }
 
-      if (month && year) {
-        const start = new Date(year, month - 1, 1);
-        const end = new Date(year, month, 0, 23, 59, 59);
-        filters.date = { gte: start, lte: end };
+      // ---- Filtre par mois ----
+      if (month) {
+        if (year) {
+          // Mois spécifique d’une année donnée
+          const start = new Date(year, month - 1, 1);
+          const end = new Date(year, month, 0, 23, 59, 59);
+          filters.date = { gte: start, lte: end };
+        } else {
+          // Tous les revenus d’un mois donné (peu importe l’année)
+          filters.AND = [
+            ...(filters.AND || []),
+            {
+              date: {
+                gte: new Date(2000, month - 1, 1),
+              },
+            },
+            {
+              date: {
+                lte: new Date(2100, month, 0, 23, 59, 59),
+              },
+            },
+          ];
+        }
       }
 
-      // Filtre par type
+      // ---- Filtre par type ----
       if (type) {
         filters.type = type;
       }
 
-      // Filtre par montant
+      // ---- Filtre par montant ----
       if (minAmount || maxAmount) {
         filters.amount = {};
         if (minAmount) filters.amount.gte = parseFloat(minAmount);
