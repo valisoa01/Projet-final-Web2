@@ -2,7 +2,6 @@
 const prisma = new PrismaClient();
 
 const incomesController = {
-
   // Créer un revenu
   createIncome: async (req, res) => {
     try {
@@ -20,7 +19,7 @@ const incomesController = {
           date: new Date(date),
           type: type || null,
           description: description || null,
-          userId: req.user.id,  // récupéré via auth middleware
+          userId: req.user.id, // récupéré via auth middleware
         },
       });
 
@@ -31,13 +30,66 @@ const incomesController = {
     }
   },
 
-  // Récupérer tous les revenus
+  // Récupérer tous les revenus avec filtres
   getIncomes: async (req, res) => {
     try {
+      const { month, year, type, minAmount, maxAmount } = req.query;
+
+      const filters = {
+        userId: req.user.id,
+      };
+
+      // ---- Filtre par année ----
+      if (year) {
+        filters.date = {
+          ...(filters.date || {}),
+          gte: new Date(`${year}-01-01`),
+          lte: new Date(`${year}-12-31T23:59:59`)
+        };
+      }
+
+      // ---- Filtre par mois ----
+      if (month) {
+        if (year) {
+          // Mois spécifique d’une année donnée
+          const start = new Date(year, month - 1, 1);
+          const end = new Date(year, month, 0, 23, 59, 59);
+          filters.date = { gte: start, lte: end };
+        } else {
+          // Tous les revenus d’un mois donné (peu importe l’année)
+          filters.AND = [
+            ...(filters.AND || []),
+            {
+              date: {
+                gte: new Date(2000, month - 1, 1),
+              },
+            },
+            {
+              date: {
+                lte: new Date(2100, month, 0, 23, 59, 59),
+              },
+            },
+          ];
+        }
+      }
+
+      // ---- Filtre par type ----
+      if (type) {
+        filters.type = type;
+      }
+
+      // ---- Filtre par montant ----
+      if (minAmount || maxAmount) {
+        filters.amount = {};
+        if (minAmount) filters.amount.gte = parseFloat(minAmount);
+        if (maxAmount) filters.amount.lte = parseFloat(maxAmount);
+      }
+
       const incomes = await prisma.incomes.findMany({
-        where: { userId: req.user.id },
+        where: filters,
         orderBy: { createdAt: "desc" },
       });
+
       res.json(incomes);
     } catch (error) {
       console.error("Erreur fetching incomes:", error);
@@ -74,7 +126,7 @@ const incomesController = {
     }
   },
 
-  // Supprimer un revenu (optionnel, mais tu en as besoin pour ton frontend)
+  // Supprimer un revenu
   deleteIncome: async (req, res) => {
     try {
       const { id } = req.params;
