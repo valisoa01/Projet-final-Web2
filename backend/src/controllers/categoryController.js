@@ -20,13 +20,13 @@ export const createCategory = async (req, res) => {
       data: {
         name,
         budget: parseFloat(budget),
-        UserId: userId,
+        userId, // ✅ corrigé
       },
     });
 
     res.status(201).json(category);
   } catch (error) {
-    console.error(error);
+    console.error("Erreur création catégorie:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
@@ -41,13 +41,14 @@ export const getCategories = async (req, res) => {
     const userId = req.user.id;
 
     const categories = await prisma.categories.findMany({
-      where: { UserId: userId },
-      // include: { Expenses: true },
+      where: { userId }, // ✅ corrigé
+      include: { Expenses: true },
+      orderBy: { createdAt: "desc" },
     });
 
     res.json(categories);
   } catch (error) {
-    console.error(error);
+    console.error("Erreur récupération catégories:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
@@ -66,7 +67,7 @@ export const updateCategory = async (req, res) => {
       where: { id: categoryId },
     });
 
-    if (!existing || existing.UserId !== userId) {
+    if (!existing || existing.userId !== userId) {
       return res.status(404).json({ message: "Category not found" });
     }
 
@@ -82,7 +83,7 @@ export const updateCategory = async (req, res) => {
 
     res.json(updated);
   } catch (error) {
-    console.error(error);
+    console.error("Erreur mise à jour catégorie:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
@@ -102,7 +103,7 @@ export const deleteCategory = async (req, res) => {
       include: { Expenses: true },
     });
 
-    if (!existing || existing.UserId !== userId) {
+    if (!existing || existing.userId !== userId) {
       return res.status(404).json({ message: "Category not found" });
     }
 
@@ -116,7 +117,7 @@ export const deleteCategory = async (req, res) => {
 
     res.json({ message: "Category deleted successfully" });
   } catch (error) {
-    console.error(error);
+    console.error("Erreur suppression catégorie:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };

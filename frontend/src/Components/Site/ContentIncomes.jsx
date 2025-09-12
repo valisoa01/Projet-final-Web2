@@ -12,18 +12,17 @@ const ContentIncomes = () => {
   const [incomes, setIncomes] = useState([]);
   const [editingIncomeId, setEditingIncomeId] = useState(null);
 
-  // State pour les filtres et le tri
-  const [filters, setFilters] = useState({
+   const [filters, setFilters] = useState({
     month: '',
     year: '',
     type: '',
     minAmount: '',
-    maxAmount: '', // Nouveau filtre pour le montant maximum
+    maxAmount: '', 
   });
   const [sortConfig, setSortConfig] = useState({
-    key: 'createdAt', // Colonne par défaut
-    direction: 'ascending', // 'ascending' ou 'descending'
-  });
+    key: 'createdAt', 
+    direction: 'ascending', 
+  })
 
   const incomesColumns = [
     { name: 'Id', key: 'id' },
