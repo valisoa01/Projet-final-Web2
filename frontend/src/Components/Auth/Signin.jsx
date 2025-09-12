@@ -43,7 +43,6 @@ const Signin = () => {
     }
   };
 
-  // Left panel icons representing money
   const icons = [
     { icon: <DollarSign className="w-10 h-10 text-cyan-300"/>, label: 'Finance' },
     { icon: <CreditCard className="w-10 h-10 text-cyan-300"/>, label: 'Payments' },
@@ -54,9 +53,9 @@ const Signin = () => {
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-indigo-900 via-indigo-800 to-indigo-700 relative overflow-hidden">
 
-      {/* Left panel */}
+
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-center items-center p-12 relative gap-6">
-        {/* Background floating elements */}
+
         <div className="absolute inset-0">
           <div className="absolute top-10 left-10 w-20 h-20 bg-cyan-500/30 rounded-full animate-bounce"></div>
           <div className="absolute top-32 right-20 w-16 h-16 bg-cyan-400/30 rounded-full animate-ping"></div>
@@ -78,11 +77,10 @@ const Signin = () => {
         </div>
       </div>
 
-      {/* Right panel form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12 relative z-10">
         <div className="w-full max-w-md bg-indigo-900/30 p-8 rounded-3xl shadow-2xl backdrop-blur-sm">
           <div className="text-center mb-6">
-            <h1 className="text-4xl font-bold text-cyan-300 mb-2">ExpenseTracker</h1>
+            <h1 className="text-4xl font-bold text-cyan-300 mb-2">PlanTracker</h1>
             <p className="text-white text-sm">Sign in to continue</p>
           </div>
 
@@ -106,10 +104,10 @@ const Signin = () => {
             <p className="text-white text-center mt-3">Don't have an account? <span onClick={() => navigate('/signup')} className="text-cyan-300 cursor-pointer hover:text-white">Sign Up</span></p>
           </form>
 
-          {/* Social buttons */}
+     
           <div className="grid grid-cols-2 gap-3 mt-6">
             <button className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/30 rounded-xl py-3 px-4 text-white text-sm font-medium transition-all duration-300">
-              {/* Google logo inline SVG */}
+           
               <svg className="w-5 h-5" viewBox="0 0 533.5 544.3">
                 <path fill="#4285F4" d="M533.5 278.4c0-18.9-1.5-37-4.4-54.6H272v103.4h147.4c-6.4 34.3-25.7 63.4-54.6 82.9v68h88.3c51.5-47.5 81.4-117.2 81.4-199.7z"/>
                 <path fill="#34A853" d="M272 544.3c73.7 0 135.5-24.5 180.7-66.4l-88.3-68c-24.5 16.5-55.7 26-92.4 26-71 0-131-47.9-152.5-112.2H29v70.5C74.2 486.1 166.5 544.3 272 544.3z"/>

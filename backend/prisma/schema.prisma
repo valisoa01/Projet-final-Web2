@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  binaryTargets = ["native", "windows"]
 }
 
 datasource db {
@@ -9,52 +8,54 @@ datasource db {
 }
 
 model Users {
-  id        Int      @id @default(autoincrement())
-  username  String   @unique
-  email     String   @unique
-  password  String
-  profile   String?
-  createdAt DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+  id         Int         @id @default(autoincrement())
+  username   String      @unique
+  email      String      @unique
+  password   String
+  profile    String?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  Incomes    Incomes[]
+  Expenses   Expenses[]
   Categories Categories[]
-  Expenses  Expenses[]
-  Incomes   Incomes[]
+}
+
+model Incomes {
+  id          Int      @id @default(autoincrement())
+  amount      Decimal  @db.Decimal
+  date        DateTime
+  type        String?  @db.VarChar(255)
+  description String?  @db.VarChar(255)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      Int
+  Users       Users    @relation(fields: [userId], references: [id])
 }
 
 model Categories {
-  id        Int      @id @default(autoincrement())
-  name      String   @db.VarChar(255)
-  budget    Decimal  @db.Decimal
-  createdAt DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime @updatedAt @db.Timestamptz(6)
-  UserId    Int
-  Users     Users    @relation(fields: [UserId], references: [id])
+  id        Int        @id @default(autoincrement())
+  name      String     @db.VarChar(255)
+  budget    Decimal    @db.Decimal
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  userId    Int
+  Users     Users      @relation(fields: [userId], references: [id])
   Expenses  Expenses[]
 }
 
 model Expenses {
   id          Int        @id @default(autoincrement())
   amount      Decimal    @db.Decimal
-  date        DateTime   @db.Timestamptz(6)
-  description String?    @db.VarChar(255)
+  date        DateTime
   type        String?    @db.VarChar(255)
+  description String?    @db.VarChar(255)
   receipt     String?    @db.VarChar(255)
-  createdAt   DateTime   @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime   @updatedAt @db.Timestamptz(6)
-  UserId      Int
-  CategoryId  Int
-  Categories  Categories @relation(fields: [CategoryId], references: [id])
-  Users       Users      @relation(fields: [UserId], references: [id])
-}
-
-model Incomes {
-  id          Int      @id @default(autoincrement())
-  amount      Decimal  @db.Decimal
-  date        DateTime @db.Timestamptz(6)
-  description String?  @db.VarChar(255)
-  type        String?  @db.VarChar(255)
-  createdAt   DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
-  UserId      Int
-  Users       Users    @relation(fields: [UserId], references: [id])
+  colonne     String?    @db.VarChar(255) 
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  userId      Int
+  categoryId  Int
+  Users       Users      @relation(fields: [userId], references: [id])
+  Categories  Categories @relation(fields: [categoryId], references: [id])
 }

@@ -1,170 +1,115 @@
 import { PrismaClient } from "@prisma/client";
+import fs from "fs";
 
 const prisma = new PrismaClient();
 
-// Récupérer toutes les dépenses
-export const getExpenses = async (req, res) => {
-  const userId = req.user.id;
-  try {
-    const expenses = await prisma.expense.findMany({
-      where: { userId },
-      include: { category: true },
-      orderBy: { date: 'desc' }
-    });
-    res.json(expenses);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
+const parseNumber = (v) => (v ? Number(v) : 0);
 
-// Récupérer une dépense spécifique
-export const getExpense = async (req, res) => {
-  const userId = req.user.id;
-  const { id } = req.params;
-
-  try {
-    const expense = await prisma.expense.findFirst({
-      where: { id, userId },
-      include: { category: true }
-    });
-
-    if (!expense) {
-      return res.status(404).json({ error: 'Dépense non trouvée' });
-    }
-
-    res.json(expense);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
-// Créer une dépense
+/**
+ * @desc Create expense
+ * @route POST /api/expenses
+ * @access Private
+ */
 export const createExpense = async (req, res) => {
-  console.log("Requête reçue:", req.body);
-  const { amount, date, categoryId, description, type, recurrence, startDate, endDate } = req.body;
-  const userId = req.user.id;
-
   try {
-    // Validation des données
-    if (!amount || amount <= 0) {
-      return res.status(400).json({ error: "Le montant doit être positif" });
-    }
-    
-    if (!categoryId) {
-      return res.status(400).json({ error: "La catégorie est requise" });
+    const userId = req.user.id;
+    const { amount, description, type, categoryId, date } = req.body;
+
+    if (!amount || !categoryId) {
+      return res.status(400).json({ message: "Amount and category required" });
     }
 
-    // Validation des dates pour les dépenses récurrentes
-    if (type === "recurring") {
-      if (!recurrence) {
-        return res.status(400).json({ error: "La fréquence est requise pour les dépenses récurrentes" });
-      }
-      if (!startDate) {
-        return res.status(400).json({ error: "La date de début est requise pour les dépenses récurrentes" });
-      }
-      if (endDate && new Date(endDate) <= new Date(startDate)) {
-        return res.status(400).json({ error: "La date de fin doit être après la date de début" });
-      }
-    }
-
-    const expense = await prisma.expense.create({
+    const expense = await prisma.expenses.create({
       data: {
-        amount: parseFloat(amount),
-        date: new Date(date),
-        description,
-        type: type || "one-time",
-        recurrence: type === "recurring" ? recurrence : null,
-        startDate: type === "recurring" ? new Date(startDate) : null,
-        endDate: type === "recurring" && endDate ? new Date(endDate) : null,
-        categoryId,
-        userId,
+        amount: parseNumber(amount),
+        description: description ?? null,
+        type: type ?? "one-time",
+        date: date ? new Date(date) : new Date(),
+        userId, // ✅ corrigé
+        categoryId: Number(categoryId), // ✅ corrigé
+        receipt: req.file?.path ?? null,
       },
-      include: { category: true },
     });
-    
-    console.log("Dépense créée avec succès:", expense);
+
     res.status(201).json(expense);
-  } catch (error) {
-    console.error("Erreur dans createExpense:", error);
-    res.status(400).json({ error: error.message });
+  } catch (err) {
+    console.error("Erreur création dépense:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
-// Modifier une dépense
+/**
+ * @desc Get all expenses
+ * @route GET /api/expenses
+ * @access Private
+ */
+export const getExpenses = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const expenses = await prisma.expenses.findMany({
+      where: { userId }, // ✅ corrigé
+      include: { Categories: true },
+      orderBy: { createdAt: "desc" },
+    });
+
+    res.json(expenses);
+  } catch (err) {
+    console.error("Erreur récupération dépenses:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+/**
+ * @desc Update expense
+ * @route PUT /api/expenses/:id
+ * @access Private
+ */
 export const updateExpense = async (req, res) => {
-  const userId = req.user.id;
-  const { id } = req.params;
-  const { amount, date, categoryId, description, type, recurrence, startDate, endDate } = req.body;
-
   try {
-    // Vérifier que la dépense appartient à l'utilisateur
-    const existingExpense = await prisma.expense.findFirst({
-      where: { id, userId }
-    });
+    const userId = req.user.id;
+    const expenseId = Number(req.params.id);
 
-    if (!existingExpense) {
-      return res.status(404).json({ error: 'Dépense non trouvée' });
-    }
+    const existing = await prisma.expenses.findUnique({ where: { id: expenseId } });
+    if (!existing || existing.userId !== userId) return res.status(404).json({ message: "Not found" });
 
-    // Validation des données
-    if (amount && amount <= 0) {
-      return res.status(400).json({ error: "Le montant doit être positif" });
-    }
+    const { amount, description, type, categoryId, date } = req.body;
 
-    // Validation des dates pour les dépenses récurrentes
-    if (type === "recurring") {
-      if (!recurrence) {
-        return res.status(400).json({ error: "La fréquence est requise pour les dépenses récurrentes" });
-      }
-      if (!startDate) {
-        return res.status(400).json({ error: "La date de début est requise pour les dépenses récurrentes" });
-      }
-      if (endDate && new Date(endDate) <= new Date(startDate)) {
-        return res.status(400).json({ error: "La date de fin doit être après la date de début" });
-      }
-    }
-
-    const expense = await prisma.expense.update({
-      where: { id },
+    const updated = await prisma.expenses.update({
+      where: { id: expenseId },
       data: {
-        amount: amount ? parseFloat(amount) : undefined,
-        date: date ? new Date(date) : undefined,
-        description,
-        type,
-        recurrence: type === "recurring" ? recurrence : null,
-        startDate: type === "recurring" ? new Date(startDate) : null,
-        endDate: type === "recurring" && endDate ? new Date(endDate) : null,
-        categoryId,
+        amount: amount ? parseNumber(amount) : existing.amount,
+        description: description ?? existing.description,
+        type: type ?? existing.type,
+        date: date ? new Date(date) : existing.date,
+        categoryId: categoryId ? Number(categoryId) : existing.categoryId, // ✅ corrigé
+        receipt: req.file?.path ?? existing.receipt,
       },
-      include: { category: true },
     });
 
-    res.json(expense);
-  } catch (error) {
-    console.error("Erreur dans updateExpense:", error);
-    res.status(400).json({ error: error.message });
+    res.json(updated);
+  } catch (err) {
+    console.error("Erreur mise à jour dépense:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// Supprimer une dépense
+
 export const deleteExpense = async (req, res) => {
-  const userId = req.user.id;
-  const { id } = req.params;
-
   try {
-    // Vérifier que la dépense appartient à l'utilisateur
-    const expense = await prisma.expense.findFirst({
-      where: { id, userId }
-    });
+    const userId = req.user.id;
+    const expenseId = Number(req.params.id);
 
-    if (!expense) {
-      return res.status(404).json({ error: 'Dépense non trouvée' });
-    }
+    const existing = await prisma.expenses.findUnique({ where: { id: expenseId } });
+    if (!existing || existing.userId !== userId) return res.status(404).json({ message: "Not found" });
 
-    await prisma.expense.delete({ where: { id } });
-    res.status(204).send();
-  } catch (error) {
-    console.error("Erreur dans deleteExpense:", error);
-    res.status(400).json({ error: error.message });
+    if (existing.receipt && fs.existsSync(existing.receipt)) fs.unlinkSync(existing.receipt);
+
+    await prisma.expenses.delete({ where: { id: expenseId } });
+
+    res.json({ message: "Deleted" });
+  } catch (err) {
+    console.error("Erreur suppression dépense:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };
