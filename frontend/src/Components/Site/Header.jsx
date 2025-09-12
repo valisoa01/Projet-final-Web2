@@ -1,6 +1,6 @@
-import { LogOut, Bell, Moon } from 'lucide-react';
+ import { LogOut, Bell, Moon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react'; // Ajout de useRef ici !
 import API from '../../api/axios';
 import Logo from '../../assets/react.svg'; 
 
@@ -8,13 +8,32 @@ const Header = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [showNotif, setShowNotif] = useState(false); // Déplacé au top pour cohérence
+  const notifRef = useRef(null); // Maintenant, useRef est importé !
 
+  // useEffect pour charger le username
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
     if (storedUsername) {
       setUsername(storedUsername);
     }
   }, []);
+
+  // useEffect pour fermer les notifs sur clic extérieur
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (notifRef.current && !notifRef.current.contains(event.target)) {
+        setShowNotif(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showNotif]); // Ajout de showNotif en dépendance (bonne pratique)
+
+  // Fonction toggle (supprimé le doublon)
+  const toggleNotifications = () => {
+    setShowNotif(!showNotif);
+  };
 
   const handleLogout = async () => {
     try {
@@ -45,11 +64,21 @@ const Header = () => {
       {/* Action Buttons */}
       <div className="w-[80%] flex items-center justify-end pr-6 gap-4">
         {/* Notifications */}
-        <div className="relative">
-          <button className="w-10 h-10 flex items-center justify-center border border-cyan-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+        <div className="relative" ref={notifRef}>
+          <button
+            onClick={toggleNotifications}
+            className="w-10 h-10 flex items-center justify-center border border-cyan-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+          >
             <Bell className="w-5 h-5 text-cyan-500" />
             <span className="absolute top-1 right-1 block w-2 h-2 rounded-full bg-red-500"></span>
           </button>
+
+          {showNotif && (
+            <div className="absolute top-full right-0 mt-2 bg-white dark:bg-gray-800 shadow-lg rounded-lg w-[20vw] h-[10vh] z-50 p-4">
+              {/* Contenu de la notification ici */}
+              <p className="text-gray-800 dark:text-white">Vous avez de nouvelles notifications.</p>
+            </div>
+          )}
         </div>
 
         {/* Logout */}
