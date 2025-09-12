@@ -1,4 +1,4 @@
-import { LogOut, Bell, Moon } from 'lucide-react';
+ import { LogOut, Bell, Moon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import API from '../../api/axios';
@@ -8,14 +8,16 @@ const Header = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const [balanceRemaining, setBalanceRemaining] = useState(0);
 
+  // Récupération du nom d'utilisateur
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
-    if (storedUsername) {
-      setUsername(storedUsername);
-    }
+    if (storedUsername) setUsername(storedUsername);
   }, []);
 
+  // Déconnexion
   const handleLogout = async () => {
     try {
       await API.post('/auth/logout');
@@ -27,9 +29,26 @@ const Header = () => {
     }
   };
 
+  // Récupération du solde dynamique
+  const handleNotificationClick = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      const res = await API.get('/dashboard/stats', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setBalanceRemaining(Number(res.data.remainingBalance || 0));
+      setShowNotification(true);
+    } catch (err) {
+      console.error('Error fetching balance:', err);
+      setBalanceRemaining(0);
+      setShowNotification(true);
+    }
+  };
+
   return (
     <div className="bg-white dark:bg-gray-900 shadow-md h-[10vh] w-full flex items-center fixed z-50">
-      
+      {/* Logo & Title */}
       <div className="w-[20%] flex items-center pl-6">
         <div className="w-12 h-12 relative mr-2">
           <div className="absolute w-4 h-4 bg-cyan-300 rounded-full top-1 left-1 animate-ping"></div>
@@ -41,14 +60,20 @@ const Header = () => {
         </span>
       </div>
 
+      {/* Actions */}
       <div className="w-[80%] flex items-center justify-end pr-6 gap-4">
+        {/* Notification */}
         <div className="relative">
-          <button className="w-10 h-10 flex items-center justify-center border border-cyan-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+          <button
+            onClick={handleNotificationClick}
+            className="w-10 h-10 flex items-center justify-center border border-cyan-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+          >
             <Bell className="w-5 h-5 text-cyan-500" />
             <span className="absolute top-1 right-1 block w-2 h-2 rounded-full bg-red-500"></span>
           </button>
         </div>
 
+        {/* Logout */}
         <div className="relative">
           <button
             onClick={() => setShowLogoutConfirm(true)}
@@ -58,6 +83,7 @@ const Header = () => {
           </button>
         </div>
 
+        {/* Dark mode */}
         <div className="relative">
           <button className="w-10 h-10 flex items-center justify-center border border-cyan-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
             <Moon className="w-5 h-5 text-cyan-500" />
@@ -65,6 +91,7 @@ const Header = () => {
         </div>
       </div>
 
+      {/* Logout Confirm Modal */}
       {showLogoutConfirm && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 w-80">
@@ -83,6 +110,28 @@ const Header = () => {
                 className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white"
               >
                 Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Notification Modal */}
+      {showNotification && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 w-80">
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+              Notifications
+            </h2>
+            <p className="text-gray-700 dark:text-gray-300">
+              Il vous reste : <span className="font-bold">{balanceRemaining.toFixed(2)} Ar</span>
+            </p>
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={() => setShowNotification(false)}
+                className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white"
+              >
+                Close
               </button>
             </div>
           </div>
