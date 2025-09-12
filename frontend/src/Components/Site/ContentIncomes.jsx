@@ -3,6 +3,7 @@ import axios from 'axios';
 
 const ContentIncomes = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isOtherType, setIsOtherType] = useState(false); // Pour le type "Other"
   const [formData, setFormData] = useState({
     amount: '',
     date: '',
@@ -78,6 +79,7 @@ const ContentIncomes = () => {
     });
     setEditingIncomeId(income.id);
     setIsFormOpen(true);
+    setIsOtherType(false);
   };
 
   const handleDelete = async (id) => {
@@ -130,6 +132,7 @@ const ContentIncomes = () => {
         );
       }
       setFormData({ amount: '', date: '', type: '', description: '' });
+      setIsOtherType(false);
       setIsFormOpen(false);
       fetchIncomes();
     } catch (error) {
@@ -256,7 +259,7 @@ const ContentIncomes = () => {
       {/* Add/Edit Form */}
       <button
         className="mt-6 bg-blue-600 text-white px-6 py-3 rounded-xl"
-        onClick={() => { setIsFormOpen(!isFormOpen); setEditingIncomeId(null); }}
+        onClick={() => { setIsFormOpen(!isFormOpen); setEditingIncomeId(null); setIsOtherType(false); }}
       >
         {editingIncomeId ? 'Edit Income' : 'Add Income'}
       </button>
@@ -268,8 +271,55 @@ const ContentIncomes = () => {
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <input type="number" name="amount" placeholder="Amount" value={formData.amount} onChange={handleChange} className="border rounded-lg p-2" required />
               <input type="date" name="date" value={formData.date} onChange={handleChange} className="border rounded-lg p-2" required />
-              <input type="text" name="type" placeholder="Type" value={formData.type} onChange={handleChange} className="border rounded-lg p-2" />
+
+              {/* Type avec option Other */}
+              <div>
+                <label>Type</label>
+                {!isOtherType ? (
+                  <select
+                    name="type"
+                    value={formData.type}
+                    onChange={(e) => {
+                      if (e.target.value === 'Other') {
+                        setIsOtherType(true);
+                        setFormData({ ...formData, type: '' });
+                      } else {
+                        setFormData({ ...formData, type: e.target.value });
+                      }
+                    }}
+                    className="w-full border rounded-lg p-2"
+                    required
+                  >
+                    <option value="">Select type</option>
+                    {uniqueTypes.map((type) => (
+                      <option key={type} value={type}>{type}</option>
+                    ))}
+                    <option value="Other">Other</option>
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    name="type"
+                    value={formData.type}
+                    onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                    placeholder="Enter new type"
+                    className="w-full border rounded-lg p-2"
+                    required
+                  />
+                )}
+                {isOtherType && (
+                  <button
+                    type="button"
+                    className="text-sm text-blue-500 mt-1"
+                    onClick={() => setIsOtherType(false)}
+                  >
+                    Choose from existing types
+                  </button>
+                )}
+              </div>
+
               <input type="text" name="description" placeholder="Description" value={formData.description} onChange={handleChange} className="border rounded-lg p-2" />
+
               <div className="flex justify-end gap-2 mt-2">
                 <button type="button" className="px-4 py-2 bg-gray-400 rounded" onClick={() => setIsFormOpen(false)}>Cancel</button>
                 <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">{editingIncomeId ? 'Save' : 'Add'}</button>
