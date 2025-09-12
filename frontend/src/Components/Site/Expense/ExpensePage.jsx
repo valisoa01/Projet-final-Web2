@@ -69,22 +69,16 @@ export default function ExpensePage({ onChange }) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
-      <div className="flex">
+      <div className="flex flex-1">
         <div className="w-64 flex-shrink-0">
           <Sidebar />
         </div>
-        
-        <div className="flex-1 p-6">
-          <div className="max-w-6xl mx-auto">
-            <div className="mb-6">
-              <h1 className="text-3xl font-bold text-gray-800">Expense Management</h1>
-              <p className="text-gray-600 mt-2">
-                Track and manage your expenses. Add one-time or recurring expenses with categories.
-              </p>
-            </div>
 
+        {/* Contenu centré verticalement */}
+        <div className="flex-1 flex justify-center items-center p-6">
+          <div className="w-full max-w-6xl">
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md mb-6">
                 {error}

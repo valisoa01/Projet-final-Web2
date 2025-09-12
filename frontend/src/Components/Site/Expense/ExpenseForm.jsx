@@ -118,8 +118,8 @@ export default function ExpenseForm({ categories, editingExpense, onSuccess, onC
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md space-y-3">
-      <h2 className="text-lg font-semibold text-gray-800">
+    <div className="bg-white p-6 rounded-2xl shadow-lg space-y-4 mt-15">
+      <h2 className="text-xl font-bold text-cyan-700">
         {editingExpense ? "Edit Expense" : "Add Expense"}
       </h2>
 
@@ -130,37 +130,38 @@ export default function ExpenseForm({ categories, editingExpense, onSuccess, onC
       )}
 
       {/* Categories */}
-      <div className="flex space-x-2 overflow-x-auto py-2">
-        {categories.map(cat => (
+      <div className="flex space-x-3 overflow-x-auto py-2">
+        {categories.map((cat) => (
           <div
             key={cat.id}
             onClick={() => handleChange("categoryId", cat.id)}
-            className={`flex-shrink-0 flex items-center px-3 py-1 rounded-lg cursor-pointer text-sm font-medium border ${
-              formData.categoryId === cat.id
-                ? "bg-blue-600 text-white border-blue-600"
-                : "bg-gray-100 text-gray-800 border-gray-300"
-            }`}
+            className={`flex-shrink-0 flex items-center px-4 py-2 rounded-xl cursor-pointer font-medium border transition-all duration-200
+              ${
+                formData.categoryId === cat.id
+                  ? "bg-cyan-600 text-white border-cyan-600"
+                  : "bg-cyan-100 text-cyan-800 border-cyan-200 hover:bg-cyan-200"
+              }`}
           >
-            {categoryIcons[cat.name] || <FileText className="w-4 h-4 mr-1" />}
+            {categoryIcons[cat.name] || <FileText className="w-4 h-4 mr-2" />}
             <span>{cat.name}</span>
           </div>
         ))}
       </div>
 
-      {/* Compact fields */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      {/* Input Fields */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <input
           type="number"
           value={formData.amount}
           onChange={(e) => handleChange("amount", e.target.value)}
           placeholder="Amount $"
-          className="px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+          className="px-3 py-2 border border-cyan-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm transition"
         />
 
         <select
           value={formData.type}
           onChange={(e) => handleChange("type", e.target.value)}
-          className="px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+          className="px-3 py-2 border border-cyan-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm transition"
         >
           <option value="one-time">One-Time</option>
           <option value="recurring">Recurring</option>
@@ -171,7 +172,7 @@ export default function ExpenseForm({ categories, editingExpense, onSuccess, onC
             type="date"
             value={formData.date}
             onChange={(e) => handleChange("date", e.target.value)}
-            className="px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            className="px-3 py-2 border border-cyan-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm transition"
           />
         )}
 
@@ -181,13 +182,13 @@ export default function ExpenseForm({ categories, editingExpense, onSuccess, onC
               type="date"
               value={formData.startDate}
               onChange={(e) => handleChange("startDate", e.target.value)}
-              className="px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="px-3 py-2 border border-cyan-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm transition"
             />
             <input
               type="date"
               value={formData.endDate}
               onChange={(e) => handleChange("endDate", e.target.value)}
-              className="px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="px-3 py-2 border border-cyan-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm transition"
             />
           </>
         )}
@@ -197,11 +198,11 @@ export default function ExpenseForm({ categories, editingExpense, onSuccess, onC
           value={formData.description}
           onChange={(e) => handleChange("description", e.target.value)}
           placeholder="Description"
-          className="col-span-1 md:col-span-2 px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+          className="col-span-1 md:col-span-2 px-3 py-2 border border-cyan-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm transition"
         />
 
-        <label className="flex items-center space-x-2 col-span-1 md:col-span-2 cursor-pointer px-2 py-1 border border-gray-300 rounded-md">
-          <Upload className="w-4 h-4 text-gray-600" />
+        <label className="flex items-center space-x-2 col-span-1 md:col-span-2 cursor-pointer px-3 py-2 border border-cyan-200 rounded-xl hover:bg-cyan-50 transition">
+          <Upload className="w-4 h-4 text-cyan-600" />
           <span className="text-sm">{receipt ? receipt.name : "Upload Receipt"}</span>
           <input
             type="file"
@@ -217,7 +218,7 @@ export default function ExpenseForm({ categories, editingExpense, onSuccess, onC
         <button
           onClick={handleSubmit}
           disabled={loading || categories.length === 0}
-          className="flex-1 bg-blue-600 text-white py-1 text-sm rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+          className="flex-1 bg-cyan-600 text-white py-2 text-sm rounded-xl hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 disabled:opacity-50 transition"
         >
           {loading ? "Processing..." : editingExpense ? "Update" : "Add"}
         </button>
@@ -225,7 +226,7 @@ export default function ExpenseForm({ categories, editingExpense, onSuccess, onC
           <button
             onClick={onCancel}
             disabled={loading}
-            className="flex-1 bg-gray-500 text-white py-1 text-sm rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50"
+            className="flex-1 bg-gray-400 text-white py-2 text-sm rounded-xl hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-300 disabled:opacity-50 transition"
           >
             Cancel
           </button>
