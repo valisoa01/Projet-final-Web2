@@ -1,5 +1,5 @@
 import express from "express";
-import auth from "../middleware/auth.js"; // Changé de { authMiddleware } vers auth
+import auth from "../middleware/auth.js"; 
 import {
   createCategory,
   getCategories,
@@ -8,7 +8,7 @@ import {
 } from "../controllers/categoryController.js";
 
 const router = express.Router();
-router.post("/", auth, createCategory); // Utilisez auth au lieu de authMiddleware
+router.post("/", auth, createCategory); 
 router.get("/", auth, getCategories);
 router.put("/:id", auth, updateCategory);
 router.delete("/:id", auth, deleteCategory);

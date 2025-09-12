@@ -222,7 +222,7 @@ const ContentIncomes = () => {
     }
   };
 
-  // Extraire les types uniques à partir des incomes
+
   const uniqueTypes = [...new Set(incomes.map(income => income.type).filter(type => type))];
 
   const totalAmount = incomes.reduce((sum, income) => sum + parseFloat(income.amount || 0), 0);
@@ -235,10 +235,9 @@ const ContentIncomes = () => {
         Income Tracking Dashboard
       </h1>
 
-      {/* Filters Section */}
       <div className="w-full bg-white rounded-2xl p-6 mb-6 shadow-lg transform transition-all duration-300 hover:shadow-xl">
         <div className="grid grid-cols-1 sm:grid-cols-5 gap-6">
-          {/* Month Filter */}
+
           <div className="relative">
             <label className="block text-sm font-medium text-gray-700 mb-2">Month</label>
             <select
@@ -254,7 +253,6 @@ const ContentIncomes = () => {
             </select>
           </div>
 
-          {/* Year Filter */}
           <div className="relative">
             <label className="block text-sm font-medium text-gray-700 mb-2">Year</label>
             <select
@@ -270,7 +268,7 @@ const ContentIncomes = () => {
             </select>
           </div>
 
-          {/* Type Filter */}
+
           <div className="relative">
             <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
             <select
@@ -286,7 +284,7 @@ const ContentIncomes = () => {
             </select>
           </div>
 
-          {/* Minimum Amount Filter */}
+
           <div className="relative">
             <label className="block text-sm font-medium text-gray-700 mb-2">Min Amount</label>
             <input
@@ -301,7 +299,6 @@ const ContentIncomes = () => {
             />
           </div>
 
-          {/* Maximum Amount Filter */}
           <div className="relative">
             <label className="block text-sm font-medium text-gray-700 mb-2">Max Amount</label>
             <input
@@ -318,9 +315,8 @@ const ContentIncomes = () => {
         </div>
       </div>
 
-      {/* Cards Section */}
       <div className="w-full grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-        {/* Card 1: Total Income */}
+
         <div className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-xl p-6 shadow-xl transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
           <div className="text-center">
             <h3 className="text-sm font-semibold uppercase tracking-wide">Total Income</h3>
@@ -328,7 +324,6 @@ const ContentIncomes = () => {
           </div>
         </div>
 
-        {/* Card 2: Number of Incomes */}
         <div className="bg-gradient-to-br from-green-600 to-teal-700 text-white rounded-xl p-6 shadow-xl transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
           <div className="text-center">
             <h3 className="text-sm font-semibold uppercase tracking-wide">Income Count</h3>
@@ -336,7 +331,7 @@ const ContentIncomes = () => {
           </div>
         </div>
 
-        {/* Card 3: Latest Income Date */}
+
         <div className="bg-gradient-to-br from-purple-600 to-pink-700 text-white rounded-xl p-6 shadow-xl transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
           <div className="text-center">
             <h3 className="text-sm font-semibold uppercase tracking-wide">Latest Income</h3>
@@ -345,7 +340,6 @@ const ContentIncomes = () => {
         </div>
       </div>
 
-      {/* Table Section */}
       <div className="w-full bg-white rounded-2xl shadow-xl">
         <table className="w-full table-auto border-collapse">
           <thead className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">

@@ -1,4 +1,4 @@
-// backend/src/routes/incomes.js
+
 import express from "express";
 import auth from "../middleware/auth.js";
 import incomesController from "../controllers/IncomesController.js";

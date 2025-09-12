@@ -94,11 +94,7 @@ export const updateExpense = async (req, res) => {
   }
 };
 
-/**
- * @desc Delete expense
- * @route DELETE /api/expenses/:id
- * @access Private
- */
+
 export const deleteExpense = async (req, res) => {
   try {
     const userId = req.user.id;

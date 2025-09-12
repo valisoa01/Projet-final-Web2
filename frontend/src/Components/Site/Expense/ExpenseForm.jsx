@@ -97,7 +97,6 @@ export default function ExpenseForm({ categories, editingExpense, onSuccess, onC
           headers: { "Content-Type": "multipart/form-data" },
         });
       }
-
       setFormData({
         amount: "",
         description: "",
