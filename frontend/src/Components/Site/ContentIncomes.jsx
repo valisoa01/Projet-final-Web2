@@ -190,19 +190,19 @@ const ContentIncomes = () => {
         </div>
       </div>
 
-      {/* Summary Tickets */}
+      {/* Summary Tickets adoucis */}
       <div className="w-full grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-        <div className="bg-cyan-600 text-white rounded-2xl shadow-md p-6 flex flex-col items-center">
+        <div className="bg-cyan-400 text-white rounded-2xl shadow-md p-6 flex flex-col items-center">
           <DollarSign className="w-8 h-8 mb-2"/>
           <p className="font-semibold">Total Income</p>
           <p className="text-lg">{totalAmount.toFixed(2)} Ar</p>
         </div>
-        <div className="bg-cyan-500 text-white rounded-2xl shadow-md p-6 flex flex-col items-center">
+        <div className="bg-cyan-300 text-white rounded-2xl shadow-md p-6 flex flex-col items-center">
           <Coins className="w-8 h-8 mb-2"/>
           <p className="font-semibold">Count</p>
           <p className="text-lg">{incomeCount}</p>
         </div>
-        <div className="bg-cyan-400 text-white rounded-2xl shadow-md p-6 flex flex-col items-center">
+        <div className="bg-cyan-200 text-white rounded-2xl shadow-md p-6 flex flex-col items-center">
           <BarChart2 className="w-8 h-8 mb-2"/>
           <p className="font-semibold">Latest</p>
           <p className="text-lg">{latestDate}</p>
@@ -242,6 +242,63 @@ const ContentIncomes = () => {
       <button className="mt-6 bg-cyan-600 text-white px-6 py-3 rounded-xl" onClick={() => { setIsFormOpen(!isFormOpen); setEditingIncomeId(null); setIsOtherType(false); }}>
         {editingIncomeId ? 'Edit Income' : 'Add Income'}
       </button>
+
+      {isFormOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-8 w-full max-w-lg">
+            <h2 className="text-2xl font-bold mb-4">{editingIncomeId ? 'Edit Income' : 'Add Income'}</h2>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <input type="number" name="amount" placeholder="Amount" value={formData.amount} onChange={handleChange} className="border rounded-lg p-2" required />
+              <input type="date" name="date" value={formData.date} onChange={handleChange} className="border rounded-lg p-2" required />
+
+              {/* Type avec option Other */}
+              <div>
+                <label>Type</label>
+                {!isOtherType ? (
+                  <select
+                    name="type"
+                    value={formData.type}
+                    onChange={(e) => {
+                      if (e.target.value === 'Other') {
+                        setIsOtherType(true);
+                        setFormData({ ...formData, type: '' });
+                      } else {
+                        setFormData({ ...formData, type: e.target.value });
+                      }
+                    }}
+                    className="w-full border rounded-lg p-2"
+                    required
+                  >
+                    <option value="">Select type</option>
+                    {uniqueTypes.map((type) => <option key={type} value={type}>{type}</option>)}
+                    <option value="Other">Other</option>
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    name="type"
+                    value={formData.type}
+                    onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                    placeholder="Enter new type"
+                    className="w-full border rounded-lg p-2"
+                    required
+                  />
+                )}
+                {isOtherType && (
+                  <button type="button" className="text-sm text-cyan-600 mt-1" onClick={() => setIsOtherType(false)}>Choose from existing types</button>
+                )}
+              </div>
+
+              <input type="text" name="description" placeholder="Description" value={formData.description} onChange={handleChange} className="border rounded-lg p-2" />
+
+              <div className="flex justify-end gap-2 mt-2">
+                <button type="button" className="px-4 py-2 bg-gray-400 rounded" onClick={() => setIsFormOpen(false)}>Cancel</button>
+                <button type="submit" className="px-4 py-2 bg-cyan-600 text-white rounded">{editingIncomeId ? 'Save' : 'Add'}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
