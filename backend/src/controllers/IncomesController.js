@@ -1,12 +1,16 @@
-import { PrismaClient } from "@prisma/client";
+ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-const IncomesController = {
-   createIncome: async (req, res) => {
+const incomesController = {
+
+  // Créer un revenu
+  createIncome: async (req, res) => {
     try {
       const { amount, date, type, description } = req.body;
+
       if (!amount || parseFloat(amount) <= 0)
         return res.status(400).json({ message: "Le montant doit être positif" });
+
       if (!date || isNaN(new Date(date).getTime()))
         return res.status(400).json({ message: "Date invalide" });
 
@@ -16,7 +20,7 @@ const IncomesController = {
           date: new Date(date),
           type: type || null,
           description: description || null,
-          userId: req.user.id,  
+          userId: req.user.id,  // récupéré via auth middleware
         },
       });
 
@@ -27,7 +31,8 @@ const IncomesController = {
     }
   },
 
-   getIncomes: async (req, res) => {
+  // Récupérer tous les revenus
+  getIncomes: async (req, res) => {
     try {
       const incomes = await prisma.incomes.findMany({
         where: { userId: req.user.id },
@@ -39,6 +44,51 @@ const IncomesController = {
       res.status(500).json({ message: "Erreur serveur", details: error.message });
     }
   },
+
+  // Mettre à jour un revenu
+  updateIncome: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { amount, date, type, description } = req.body;
+
+      if (!amount || parseFloat(amount) <= 0)
+        return res.status(400).json({ message: "Le montant doit être positif" });
+
+      if (!date || isNaN(new Date(date).getTime()))
+        return res.status(400).json({ message: "Date invalide" });
+
+      const income = await prisma.incomes.update({
+        where: { id: parseInt(id) },
+        data: {
+          amount: parseFloat(amount),
+          date: new Date(date),
+          type: type || null,
+          description: description || null,
+        },
+      });
+
+      res.json(income);
+    } catch (error) {
+      console.error("Erreur update revenu:", error);
+      res.status(500).json({ message: "Erreur serveur", details: error.message });
+    }
+  },
+
+  // Supprimer un revenu (optionnel, mais tu en as besoin pour ton frontend)
+  deleteIncome: async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      await prisma.incomes.delete({
+        where: { id: parseInt(id) },
+      });
+
+      res.json({ message: "Revenu supprimé avec succès" });
+    } catch (error) {
+      console.error("Erreur suppression revenu:", error);
+      res.status(500).json({ message: "Erreur serveur", details: error.message });
+    }
+  },
 };
 
-export default IncomesController;
+export default incomesController;
