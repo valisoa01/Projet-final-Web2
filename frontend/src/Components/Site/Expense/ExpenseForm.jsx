@@ -1,6 +1,18 @@
 // src/Components/Site/Expense/ExpenseForm.jsx
 import { useState, useEffect } from "react";
 import API from "../../../api/axios";
+import { Upload } from "lucide-react";
+
+const categoryEmojis = {
+  Food: "🍔",
+  Transport: "🚗",
+  Housing: "🏠",
+  Entertainment: "🎬",
+  Shopping: "🛍️",
+  Utilities: "💡",
+  Health: "💊",
+  Other: "📝",
+};
 
 export default function ExpenseForm({ categories, editingExpense, onSuccess, onCancel }) {
   const [formData, setFormData] = useState({
@@ -30,15 +42,11 @@ export default function ExpenseForm({ categories, editingExpense, onSuccess, onC
     }
   }, [editingExpense]);
 
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+  const handleChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setLoading(true);
     setError("");
 
@@ -89,8 +97,7 @@ export default function ExpenseForm({ categories, editingExpense, onSuccess, onC
           headers: { "Content-Type": "multipart/form-data" },
         });
       }
-      
-      // Reset form
+
       setFormData({
         amount: "",
         description: "",
@@ -102,193 +109,129 @@ export default function ExpenseForm({ categories, editingExpense, onSuccess, onC
       });
       setReceipt(null);
       setError("");
-      
-      // Call success callback
       onSuccess();
-      
     } catch (err) {
       setError(err.response?.data?.message || "Server error");
-      console.error("Expense form error:", err);
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleCancel = () => {
-    setFormData({
-      amount: "",
-      description: "",
-      type: "one-time",
-      categoryId: "",
-      date: "",
-      startDate: "",
-      endDate: ""
-    });
-    setReceipt(null);
-    setError("");
-    if (onCancel) onCancel();
-  };
-
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md space-y-4">
-      <h2 className="text-xl font-semibold text-gray-800">
-        {editingExpense ? "Edit Expense" : "Add New Expense"}
+    <div className="bg-white p-4 rounded-lg shadow-md space-y-3">
+      <h2 className="text-lg font-semibold text-gray-800">
+        {editingExpense ? "Edit Expense" : "Add Expense"}
       </h2>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md">
+        <div className="bg-red-50 border border-red-200 text-red-600 px-3 py-2 rounded-md text-sm">
           {error}
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Amount ($) *
-          </label>
-          <input
-            type="number"
-            value={formData.amount}
-            onChange={(e) => handleInputChange('amount', e.target.value)}
-            min="0"
-            step="0.01"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="0.00"
-            disabled={loading}
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Category *
-          </label>
-          <select
-            value={formData.categoryId}
-            onChange={(e) => handleInputChange('categoryId', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            disabled={loading || categories.length === 0}
+      {/* Categories */}
+      <div className="flex space-x-2 overflow-x-auto py-2">
+        {categories.map(cat => (
+          <div
+            key={cat.id}
+            onClick={() => handleChange("categoryId", cat.id)}
+            className={`flex-shrink-0 px-3 py-1 rounded-lg cursor-pointer text-sm font-medium border ${
+              formData.categoryId === cat.id
+                ? "bg-blue-600 text-white border-blue-600"
+                : "bg-gray-100 text-gray-800 border-gray-300"
+            }`}
           >
-            <option value="">Select Category</option>
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.name}
-              </option>
-            ))}
-          </select>
-          {categories.length === 0 && (
-            <p className="text-sm text-red-600 mt-1">
-              No categories available. Please create a category first.
-            </p>
-          )}
-        </div>
+            <span className="mr-1">{categoryEmojis[cat.name] || "📝"}</span>
+            <span>{cat.name}</span>
+          </div>
+        ))}
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Description
-        </label>
+      {/* Compact fields */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <input
-          type="text"
-          value={formData.description}
-          onChange={(e) => handleInputChange('description', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          placeholder="Enter expense description"
-          disabled={loading}
+          type="number"
+          value={formData.amount}
+          onChange={(e) => handleChange("amount", e.target.value)}
+          placeholder="Amount $"
+          className="px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
         />
-      </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Type *
-        </label>
         <select
           value={formData.type}
-          onChange={(e) => handleInputChange('type', e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          disabled={loading}
+          onChange={(e) => handleChange("type", e.target.value)}
+          className="px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
         >
           <option value="one-time">One-Time</option>
           <option value="recurring">Recurring</option>
         </select>
-      </div>
 
-      {formData.type === "one-time" && (
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Date *
-          </label>
+        {formData.type === "one-time" && (
           <input
             type="date"
             value={formData.date}
-            onChange={(e) => handleInputChange('date', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            disabled={loading}
+            onChange={(e) => handleChange("date", e.target.value)}
+            className="px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
           />
-        </div>
-      )}
+        )}
 
-      {formData.type === "recurring" && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Start Date *
-            </label>
+        {formData.type === "recurring" && (
+          <>
             <input
               type="date"
               value={formData.startDate}
-              onChange={(e) => handleInputChange('startDate', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              disabled={loading}
+              onChange={(e) => handleChange("startDate", e.target.value)}
+              className="px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              End Date (optional)
-            </label>
             <input
               type="date"
               value={formData.endDate}
-              onChange={(e) => handleInputChange('endDate', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              disabled={loading}
+              onChange={(e) => handleChange("endDate", e.target.value)}
+              className="px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
             />
-          </div>
-        </div>
-      )}
+          </>
+        )}
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Receipt (optional)
-        </label>
         <input
-          type="file"
-          onChange={(e) => setReceipt(e.target.files[0])}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          disabled={loading}
-          accept="image/*,.pdf,.doc,.docx"
+          type="text"
+          value={formData.description}
+          onChange={(e) => handleChange("description", e.target.value)}
+          placeholder="Description"
+          className="col-span-1 md:col-span-2 px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
         />
+
+        <label className="flex items-center space-x-2 col-span-1 md:col-span-2 cursor-pointer px-2 py-1 border border-gray-300 rounded-md">
+          <Upload className="w-4 h-4 text-gray-600" />
+          <span className="text-sm">{receipt ? receipt.name : "Upload Receipt"}</span>
+          <input
+            type="file"
+            onChange={(e) => setReceipt(e.target.files[0])}
+            className="hidden"
+            accept="image/*,.pdf,.doc,.docx"
+          />
+        </label>
       </div>
 
-      <div className="flex space-x-3 pt-4">
+      {/* Buttons */}
+      <div className="flex space-x-2">
         <button
-          type="submit"
+          onClick={handleSubmit}
           disabled={loading || categories.length === 0}
-          className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="flex-1 bg-blue-600 text-white py-1 text-sm rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
         >
-          {loading ? "Processing..." : editingExpense ? "Update Expense" : "Add Expense"}
+          {loading ? "Processing..." : editingExpense ? "Update" : "Add"}
         </button>
-        
         {editingExpense && (
           <button
-            type="button"
-            onClick={handleCancel}
+            onClick={onCancel}
             disabled={loading}
-            className="flex-1 bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 transition-colors"
+            className="flex-1 bg-gray-500 text-white py-1 text-sm rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50"
           >
             Cancel
           </button>
         )}
       </div>
-    </form>
+    </div>
   );
 }

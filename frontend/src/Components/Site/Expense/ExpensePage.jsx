@@ -18,7 +18,6 @@ export default function ExpensePage({ onChange }) {
       setLoading(true);
       const res = await API.get("/expenses");
       setExpenses(res.data);
-      console.log("Expenses fetched, calling onChange");
       if (onChange) onChange();
     } catch (err) {
       console.error("Error fetching expenses:", err);
@@ -60,7 +59,6 @@ export default function ExpensePage({ onChange }) {
 
   const handleSuccess = () => {
     setEditingExpense(null);
-    // Add a small delay to ensure backend processes the data
     setTimeout(() => {
       fetchExpenses();
     }, 300);
@@ -93,25 +91,14 @@ export default function ExpensePage({ onChange }) {
               </div>
             )}
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-              <div>
-                <ExpenseForm
-                  categories={categories}
-                  editingExpense={editingExpense}
-                  onSuccess={handleSuccess}
-                  onCancel={handleCancel}
-                />
-              </div>
-              
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-blue-800 mb-3">💡 Quick Tips</h3>
-                <ul className="space-y-2 text-sm text-blue-700">
-                  <li>• Use categories to organize your expenses</li>
-                  <li>• Set budgets for each category to track spending</li>
-                  <li>• Upload receipts for important expenses</li>
-                  <li>• Use recurring expenses for regular payments</li>
-                </ul>
-              </div>
+            {/* Formulaire uniquement */}
+            <div className="mb-8">
+              <ExpenseForm
+                categories={categories}
+                editingExpense={editingExpense}
+                onSuccess={handleSuccess}
+                onCancel={handleCancel}
+              />
             </div>
 
             {loading ? (
