@@ -41,7 +41,7 @@ import { useEffect, useState } from 'react';
               <img 
                 src={`http://localhost:5000${profile.profileUrl}`} 
                 alt="Profile" 
-                className="w-full h-full object-cover"
+                className="w-full h-full  object-cover"
                 onError={(e) => { e.target.style.display = 'none'; }}
               />
             ) : (

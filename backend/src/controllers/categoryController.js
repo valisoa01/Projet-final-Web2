@@ -16,7 +16,7 @@ export const createCategory = async (req, res) => {
       data: {
         name,
         budget: parseFloat(budget),
-        userId, // ✅ corrigé
+        userId,
       },
     });
 
