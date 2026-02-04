@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import API from "../../api/axios";
+import API, { BASE_URL } from "../../api/axios";
 import Header from "../Site/Header";
 import Sidebar from "../Site/Sidebar";
 import { Camera } from "lucide-react"; 
@@ -119,7 +119,7 @@ const Settings = () => {
                     <div className="relative w-32 h-32 mb-4">
                       {(previewImage || currentProfile) ? (
                         <img
-                          src={previewImage || `http://localhost:5000${currentProfile}`}
+                          src={previewImage || `${BASE_URL}${currentProfile}`}
                           alt="Profile"
                           className="w-32 h-32 rounded-full object-cover border-2 border-cyan-400"
                         />

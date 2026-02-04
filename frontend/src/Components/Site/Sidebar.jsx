@@ -1,7 +1,7 @@
  import { Home, Wallet, Briefcase, User, Settings } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
- import API from "../../api/axios";
+ import API, { BASE_URL } from "../../api/axios";
  import { MdCategory } from "react-icons/md";
  
  const Sidebar = () => {
@@ -39,7 +39,7 @@ import { useEffect, useState } from 'react';
           <div className="w-12 h-12 rounded-full bg-cyan-500 flex items-center justify-center text-white font-bold ring-2 ring-cyan-300/30 overflow-hidden shadow-md">
             {profile?.profileUrl ? (
               <img 
-                src={`http://localhost:5000${profile.profileUrl}`} 
+                src={`${BASE_URL}${profile.profileUrl}`} 
                 alt="Profile" 
                 className="w-full h-full  object-cover"
                 onError={(e) => { e.target.style.display = 'none'; }}

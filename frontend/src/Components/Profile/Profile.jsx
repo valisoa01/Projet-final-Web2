@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import API from "../../api/axios";
+import API, { BASE_URL } from "../../api/axios";
 import Header from "../Site/Header";
 import Sidebar from "../Site/Sidebar";
 import { Mail, User, CheckCircle, Edit3, LogOut } from "lucide-react";
@@ -64,7 +64,7 @@ const Profile = () => {
               <div className="flex-none w-1/3 p-6 flex flex-col items-center justify-center bg-cyan-50 dark:bg-cyan-900 rounded-l-xl gap-4">
                 {profile.profileUrl ? (
                   <img
-                    src={`http://localhost:5000${profile.profileUrl}`}
+                    src={`${BASE_URL}${profile.profileUrl}`}
                     alt="Profile"
                     className="w-48 h-48 rounded-full border-4 border-cyan-400 object-cover"
                   />
