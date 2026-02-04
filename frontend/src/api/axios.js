@@ -14,11 +14,7 @@ API.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token'); // N'oublie pas de supprimer le token aussi
-      localStorage.removeItem('userId');
-      localStorage.removeItem('userEmail');
-      localStorage.removeItem('username');
-      localStorage.removeItem('profileUrl');
+       localStorage.clear();
       window.location.href = '/signin';
     }
     return Promise.reject(error);

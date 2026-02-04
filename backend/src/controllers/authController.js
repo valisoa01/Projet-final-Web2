@@ -39,7 +39,9 @@ export const upload = multer({
 export const signup = async (req, res) => {
   try {
     const { username, email, password, confirmPassword } = req.body;
-    const profile = req.file ? req.file.path : null;
+    
+    // On enregistre un chemin relatif pour que le frontend puisse ajouter le BASE_URL
+    const profilePath = req.file ? `/uploads/${req.file.filename}` : null;
 
     if (!username || !email || !password || !confirmPassword) {
       return res.status(400).json({ error: 'All fields are required' });
@@ -47,15 +49,11 @@ export const signup = async (req, res) => {
     if (password !== confirmPassword) {
       return res.status(400).json({ error: 'Passwords do not match' });
     }
-    if (password.length < 8) {
-      return res.status(400).json({ error: 'Password must be at least 8 characters long' });
-    }
 
     const existingUser = await prisma.Users.findFirst({
-      where: {
-        OR: [{ email }, { username }],
-      },
+      where: { OR: [{ email }, { username }] },
     });
+
     if (existingUser) {
       return res.status(400).json({
         error: existingUser.email === email ? 'Email already exists' : 'Username already exists',
@@ -69,42 +67,34 @@ export const signup = async (req, res) => {
         username,
         email,
         password: hashedPassword,
-        profile,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        profile: profilePath,
       },
     });
 
     const token = jwt.sign(
       { id: user.id, email: user.email, username: user.username },
       process.env.JWT_ACCESS_SECRET,
-      { expiresIn: process.env.JWT_ACCESS_EXPIRES || '7d' }
+      { expiresIn: '7d' }
     );
 
-     res.cookie('token', token, {
+    // Configuration pour domaine croisé (Vercel <-> Render)
+    res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: true, 
+      sameSite: 'none', 
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      domain: process.env.COOKIE_DOMAIN || 'localhost' 
     });
 
-     return res.status(201).json({
+    return res.status(201).json({
       message: 'User created successfully',
       token,
       userId: user.id,
       username: user.username,
-      email: user.email,
       profileUrl: user.profile,
     });
 
   } catch (err) {
     console.error('Signup error:', err);
-    if (err.code === 'P2002') {
-      return res.status(400).json({
-        error: err.meta.target.includes('email') ? 'Email already exists' : 'Username already exists',
-      });
-    }
     return res.status(500).json({ error: 'Internal server error' });
   }
 };
