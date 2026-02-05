@@ -1,11 +1,10 @@
 import axios from 'axios';
 
-// Si VITE_API_URL n'est pas défini (en local), on utilise localhost
-// IMPORTANT : Sur Vercel, ta variable VITE_API_URL doit être https://projet-final-web2.onrender.com/api
-export const BASE_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+// On utilise directement la variable sans faire de .replace()
+const apiBaseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  baseURL: apiBaseURL,
   timeout: 30000,
   withCredentials: true,
 });
