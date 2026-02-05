@@ -1,8 +1,8 @@
  import { Home, Wallet, Briefcase, User, Settings } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
- import API, { BASE_URL } from "../../api/axios";
- import { MdCategory } from "react-icons/md";
+import API from "../../api/axios";
+import { MdCategory } from "react-icons/md";
  
  const Sidebar = () => {
  
@@ -30,6 +30,8 @@ import { useEffect, useState } from 'react';
     if (!name) return 'U';
     return name.charAt(0).toUpperCase();
   };
+  const BASE_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+
 
   return (
     <aside className="w-64 h-[90vh] fixed top-[10vh] left-0 bg-white dark:bg-gray-900 shadow-xl flex flex-col justify-between z-40 transition-colors duration-300">

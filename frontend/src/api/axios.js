@@ -1,11 +1,12 @@
 import axios from 'axios';
 
-// On utilise directement la variable sans faire de .replace()
-const apiBaseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Si VITE_API_URL n'est pas défini (en local), on utilise localhost
+// IMPORTANT : Sur Vercel, ta variable VITE_API_URL doit être https://projet-final-web2.onrender.com/api
+const BASE_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
 const API = axios.create({
-  baseURL: apiBaseURL,
-  timeout: 30000,
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  timeout: 10000,
   withCredentials: true,
 });
   
@@ -20,4 +21,6 @@ API.interceptors.response.use(
   }
 );
 
+// Exportez à la fois API et BASE_URL
+export { BASE_URL };
 export default API;

@@ -1,26 +1,7 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "installCommand": "npm install",
+  "installCommand": "npm install --legacy-peer-deps",
   "devCommand": "npm run dev",
-  "framework": "vite",
-  
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self' https://vercel.live https://*.vercel.app; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://vercel.live https://*.vercel.app; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https:; connect-src 'self' https://projet-final-web2.onrender.com https://vercel.live https://*.vercel.app ws: wss:; frame-src 'self' https:; worker-src 'self' blob:;"
-        }
-      ]
-    }
-  ],
-  
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ]
+  "framework": "vite"
 }
