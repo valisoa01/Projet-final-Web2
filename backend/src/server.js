@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 dotenv.config();
-
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -20,20 +19,18 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// --- CONFIGURATION CORS (CORRECTION CRUCIALE) ---
+// --- CONFIGURATION CORS (ESSENTIELLE) ---
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://projet-final-web2-wefb.vercel.app', // Ton URL d'image image_cc43c6.jpg
-  'https://projet-final-web2.vercel.app'
+  'https://projet-final-web2.vercel.app',
+  'https://projet-final-web2-wefb.vercel.app' // Ton URL de test vue sur les images
 ];
 
 app.use(cors({ 
   origin: function (origin, callback) {
-    // Permet les requêtes sans origine (comme Postman) ou les origines autorisées
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      console.log("CORS Bloqué pour l'origine:", origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -46,10 +43,10 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static pour afficher les fichiers uploadés (Utilise path.join pour être sûr)
+// Accès aux images uploadées
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-// Routes principales
+// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/dashboard', dashboardRoutes);
@@ -59,10 +56,8 @@ app.use('/api/categories', categoryRoutes);
 
 app.use(handleUploadError);
 
-// Health check (Très utile pour réveiller Render)
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Server is live' });
-});
+// Health Check pour réveiller le serveur
+app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
