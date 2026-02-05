@@ -4,6 +4,8 @@ dotenv.config();
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 // Tes routes
 import authRoutes from './routes/auth.js';
@@ -15,22 +17,37 @@ import categoryRoutes from './routes/categoryRoutes.js';
 import { handleUploadError } from './utils/upload.js';
 
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// Middlewares globaux
-app.use(cookieParser());
+// --- CONFIGURATION CORS (CORRECTION CRUCIALE) ---
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://projet-final-web2-wefb.vercel.app', // Ton URL d'image image_cc43c6.jpg
+  'https://projet-final-web2.vercel.app'
+];
 
 app.use(cors({ 
-  origin: process.env.FRONTEND_URL || 'https://projet-final-web2.vercel.app',
+  origin: function (origin, callback) {
+    // Permet les requêtes sans origine (comme Postman) ou les origines autorisées
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.log("CORS Bloqué pour l'origine:", origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static pour afficher les fichiers uploadés
-app.use('/uploads', express.static('uploads')); // ⚠️ vérifie que ton dossier est bien "uploads" en minuscule
+// Static pour afficher les fichiers uploadés (Utilise path.join pour être sûr)
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Routes principales
 app.use('/api/auth', authRoutes);
@@ -40,29 +57,12 @@ app.use('/api/incomes', incomesRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/categories', categoryRoutes);
 
-// Middleware de gestion des erreurs Multer (upload)
 app.use(handleUploadError);
 
-// Middleware global de gestion d’erreurs
-app.use((err, req, res, next) => {
-  console.error('Global error handler:', err);
-  res.status(500).json({ message: 'Erreur serveur interne' });
-});
-
-// Routes de test / health check
-app.get('/api/incomes/test-route', (req, res) => {
-  res.json({ message: 'Route test fonctionne' });
-});
-
+// Health check (Très utile pour réveiller Render)
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', server: 'running' });
+  res.json({ status: 'ok', message: 'Server is live' });
 });
 
-// Route 404
-app.use('*', (req, res) => {
-  res.status(404).json({ message: 'Route non trouvée' });
-});
-
-// Lancement du serveur
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
