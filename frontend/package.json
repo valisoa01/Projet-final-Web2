@@ -4,12 +4,12 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-  "dev": "vite",
-  "build": "vite build",
-  "preview": "vite preview",
-  "lint": "eslint .",
-  "vercel-build": "vite build"
-},
+    "dev": "vite",
+    "build": "npm audit fix --force && vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "vercel-build": "npm audit fix --force && vite build"
+  },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",
     "@tailwindcss/vite": "^4.1.11",
@@ -17,7 +17,7 @@
     "chart.js": "^4.4.6",
     "class-variance-authority": "^0.7.1",
     "framer-motion": "^12.23.12",
-    "jspdf": "^4.1.0",
+    "jspdf": "^3.0.2",
     "jspdf-autotable": "^5.0.2",
     "lucide-react": "^0.476.0",
     "react": "^19.1.0",
@@ -38,7 +38,7 @@
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.18",
     "globals": "^15.14.0",
-    "vite": "^7.3.1"
+    "vite": "^5.4.11"
   },
   "engines": {
     "node": ">=18.0.0"
