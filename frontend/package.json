@@ -4,11 +4,11 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "npm audit fix --force && vite build",
-    "preview": "vite preview",
-    "lint": "eslint .",
-    "vercel-build": "npm audit fix --force && vite build"
+  "dev": "vite",
+  "build": "vite build",
+  "preview": "vite preview",
+  "lint": "eslint .",
+  "vercel-build": "vite build"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",
