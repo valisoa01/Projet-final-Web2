@@ -5,53 +5,42 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm audit fix --force && vite build",
     "preview": "vite preview",
-    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,md}\"",
-    "deploy": "npm run build && vercel --prod",
-    "vercel-build": "npm run build"
+    "lint": "eslint .",
+    "vercel-build": "npm audit fix --force && vite build"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",
     "@tailwindcss/vite": "^4.1.11",
-    "axios": "^1.11.0",
-    "chart.js": "^4.5.0",
+    "axios": "^1.12.5",
+    "chart.js": "^4.4.6",
     "class-variance-authority": "^0.7.1",
     "framer-motion": "^12.23.12",
-    "jspdf": "^3.0.2",
+    "jspdf": "^4.1.0",
     "jspdf-autotable": "^5.0.2",
-    "lucide-react": "^0.542.0",
-    "react": "^19.1.1",
+    "lucide-react": "^0.476.0",
+    "react": "^19.1.0",
     "react-chartjs-2": "^5.3.0",
-    "react-dom": "^19.1.1",
-    "react-icons": "^5.5.0",
-    "react-router-dom": "^7.8.2",
-    "recharts": "^3.2.0",
+    "react-dom": "^19.1.0",
+    "react-icons": "^5.4.0",
+    "react-router-dom": "^7.0.2",
+    "recharts": "^3.0.0-beta.6",
     "tailwind-variants": "^3.1.1",
-    "tailwindcss": "^4.1.11"
+    "tailwindcss": "^4.0.0-alpha.15"
   },
   "devDependencies": {
-    "@eslint/js": "^9.30.1",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
-    "@vitejs/plugin-react": "^4.6.0",
-    "autoprefixer": "^10.4.20",
-    "eslint": "^9.30.1",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
-    "globals": "^16.3.0",
-    "postcss": "^8.5.3",
-    "prettier": "^3.5.3",
-    "prettier-plugin-tailwindcss": "^0.6.11",
-    "vite": "^7.0.4"
+    "@eslint/js": "^9.17.0",
+    "@types/react": "^19.0.7",
+    "@types/react-dom": "^19.0.3",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.17.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.18",
+    "globals": "^15.14.0",
+    "vite": "^7.3.1"
   },
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
-  },
-  "browserslist": {
-    "production": [">0.2%", "not dead", "not op_mini all"],
-    "development": ["last 1 chrome version", "last 1 firefox version", "last 1 safari version"]
+    "node": ">=18.0.0"
   }
 }

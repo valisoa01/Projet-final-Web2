@@ -2,26 +2,23 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/x-icon" href="/src/assets/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- CSP pour développement -->
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/src/assets/favicon.png" type="image/x-icon">
+    
+    <!-- CSP CORRIGÉE -->
     <meta http-equiv="Content-Security-Policy" 
-          content="default-src 'self' http://localhost:5173 https://localhost:5173;
-                   script-src 'self' 'unsafe-inline' 'unsafe-eval' 'blob:' 'wasm-unsafe-eval';
+          content="default-src 'self';
+                   script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:;
                    style-src 'self' 'unsafe-inline';
-                   img-src 'self' data: blob: http://localhost:5173 https://localhost:5173;
+                   img-src 'self' data: blob: https:;
                    font-src 'self' data:;
-                   connect-src 'self' ws://localhost:5173 wss://localhost:5173 http://localhost:5173 https://localhost:5173;
+                   connect-src 'self' https://projet-final-web2.onrender.com http://localhost:5173 ws://localhost:5173;
                    frame-src 'self';
                    worker-src 'self' blob:;">
     
     <title>PlanTracker</title>
-    
-    <!-- Préchargement des polices si nécessaire -->
-    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"> -->
   </head>
   <body>
     <div id="root"></div>
