@@ -6,7 +6,7 @@ import cookieParser from 'cookie-parser';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// Tes routes
+// Import des routes
 import authRoutes from './routes/auth.js';
 import usersRoutes from './routes/users.js';
 import dashboardRoutes from './routes/dashboard.js';
@@ -19,34 +19,40 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// --- CONFIGURATION CORS (ESSENTIELLE) ---
+// --- CONFIGURATION CORS AMÉLIORÉE ---
 const allowedOrigins = [
   'http://localhost:5173',
   'https://projet-final-web2.vercel.app',
-  'https://projet-final-web2-wefb.vercel.app' // Ton URL de test vue sur les images
+  'https://projet-final-web2-wefb.vercel.app'
 ];
 
 app.use(cors({ 
   origin: function (origin, callback) {
+    // Autorise les requêtes sans origine (comme Postman) ou les origines listées
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.error(`CORS Error: Origin ${origin} not allowed`);
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  optionsSuccessStatus: 200
 }));
 
+// --- MIDDLEWARES DE BASE ---
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Accès aux images uploadées
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+// --- FICHIERS STATIQUES ---
+// Assure-toi que le dossier 'uploads' existe à la racine
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Routes
+// --- ROUTES API ---
+// Note : Tes appels frontend doivent impérativement commencer par /api
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/dashboard', dashboardRoutes);
@@ -54,10 +60,24 @@ app.use('/api/incomes', incomesRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/categories', categoryRoutes);
 
+// --- GESTION DES ERREURS ---
 app.use(handleUploadError);
 
-// Health Check pour réveiller le serveur
-app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
+// Health Check (Utile pour Render)
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'ok', 
+    message: 'Server is running',
+    environment: process.env.NODE_ENV 
+  });
+});
 
+// --- DÉMARRAGE DU SERVEUR ---
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+const server = app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`🚀 Environment: ${process.env.NODE_ENV}`);
+});
+
+server.keepAliveTimeout = 120000; 
+server.headersTimeout = 125000;
