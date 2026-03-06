@@ -22,8 +22,8 @@ const __dirname = path.dirname(__filename);
 // --- CONFIGURATION CORS AMÉLIORÉE ---
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://projet-final-web2.vercel.app',
-  'https://projet-final-web2-wefb.vercel.app'
+  'https://projet-final-web2-ntos.vercel.app',
+  'https://projet-final-web2-ntos.vercel.app/api',
 ];
 
 app.use(cors({ 
