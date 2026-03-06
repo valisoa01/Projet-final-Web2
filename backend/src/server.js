@@ -19,16 +19,15 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// --- CONFIGURATION CORS AMÉLIORÉE ---
+// --- CONFIGURATION CORS CORRIGÉE ---
+// Autorise uniquement les domaines de confiance
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://projet-final-web2-ntos.vercel.app',
-  'https://projet-final-web2-ntos.vercel.app/api',
+  'https://projet-final-web2-9obq.vercel.app'
 ];
 
 app.use(cors({ 
   origin: function (origin, callback) {
-    // Autorise les requêtes sans origine (comme Postman) ou les origines listées
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -42,17 +41,15 @@ app.use(cors({
   optionsSuccessStatus: 200
 }));
 
-// --- MIDDLEWARES DE BASE ---
+// --- MIDDLEWARES ---
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // --- FICHIERS STATIQUES ---
-// Assure-toi que le dossier 'uploads' existe à la racine
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // --- ROUTES API ---
-// Note : Tes appels frontend doivent impérativement commencer par /api
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/dashboard', dashboardRoutes);
@@ -63,21 +60,13 @@ app.use('/api/categories', categoryRoutes);
 // --- GESTION DES ERREURS ---
 app.use(handleUploadError);
 
-// Health Check (Utile pour Render)
+// Health Check
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'ok', 
-    message: 'Server is running',
-    environment: process.env.NODE_ENV 
-  });
+  res.status(200).json({ status: 'ok', message: 'Server is running' });
 });
 
 // --- DÉMARRAGE DU SERVEUR ---
 const PORT = process.env.PORT || 5000;
-const server = app.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
-  console.log(`🚀 Environment: ${process.env.NODE_ENV}`);
 });
-
-server.keepAliveTimeout = 120000; 
-server.headersTimeout = 125000;
