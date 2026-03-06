@@ -19,8 +19,7 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// --- CONFIGURATION CORS CORRIGÉE ---
-// Autorise uniquement les domaines de confiance
+// --- CONFIGURATION CORS AMÉLIORÉE ---
 const allowedOrigins = [
   'http://localhost:5173',
   'https://projet-final-web2-9obq.vercel.app'
@@ -31,15 +30,17 @@ app.use(cors({
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      console.error(`CORS Error: Origin ${origin} not allowed`);
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200 // Pour les navigateurs plus anciens
 }));
+
+// Important : Gérer explicitement les requêtes OPTIONS
+app.options('*', cors()); 
 
 // --- MIDDLEWARES ---
 app.use(cookieParser());
