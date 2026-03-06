@@ -19,13 +19,13 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// --- CONFIGURATION CORS AMÉLIORÉE ---
 const allowedOrigins = [
   'http://localhost:5173',
+  'http://192.168.1.66:5173',
   'https://projet-final-web2-9obq.vercel.app'
 ];
 
-app.use(cors({ 
+ app.use(cors({ 
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -40,8 +40,10 @@ app.use(cors({
 }));
 
 // Important : Gérer explicitement les requêtes OPTIONS
-app.options('*', cors()); 
-
+app.options('*', cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 // --- MIDDLEWARES ---
 app.use(cookieParser());
 app.use(express.json());
