@@ -22,7 +22,7 @@ const __dirname = path.dirname(__filename);
 const allowedOrigins = [
   'http://localhost:5173',
   'http://192.168.1.66:5173',
-  'https://projet-final-web2-aps.vercel.app/'
+  'https://projet-final-web2-aps.vercel.app'
 ];
 
  app.use(cors({ 
