@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import API, { BASE_URL } from "../../api/axios";
+import API from "../../api/axios"; // Supprimé BASE_URL
 import Header from "../Site/Header";
 import Sidebar from "../Site/Sidebar";
 import { Mail, User, CheckCircle, Edit3, LogOut } from "lucide-react";
@@ -13,22 +13,12 @@ const Profile = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('token');
-        if (!token) {
-          setError('No authentication token found');
-          setLoading(false);
-          return;
-        }
         const res = await API.get('/users/me', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setProfile(res.data); 
       } catch (err) {
-        console.error('Profile fetch error:', err);
         setError('Failed to fetch profile');
-        if (err.response?.status === 401) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('userId');
-        }
       } finally {
         setLoading(false);
       }
@@ -36,92 +26,34 @@ const Profile = () => {
     fetchProfile();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-500"></div>
-      </div>
-    );
-  }
+  if (loading) return <div>Loading...</div>;
 
   return (
-    <div className="flex flex-col h-screen w-full bg-gray-50 dark:bg-gray-900">
+    <div className="flex flex-col h-screen w-full bg-gray-50">
       <Header />
       <div className="flex flex-1 min-h-0">
         <Sidebar />
-
-        <div className="flex-1 flex justify-start items-center p-6 overflow-auto ml-[15vw]">
-          {error && (
-            <div className="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 text-red-700 dark:text-red-400 rounded-lg p-4 mb-4 w-full max-w-5xl">
-              {error}
-            </div>
-          )}
-
+        <div className="flex-1 flex justify-start items-center p-6 ml-[15vw]">
           {profile && (
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg w-full max-w-5xl flex hover:shadow-2xl transition-shadow duration-300 ml-20">
-              
-             
-              <div className="flex-none w-1/3 p-6 flex flex-col items-center justify-center bg-cyan-50 dark:bg-cyan-900 rounded-l-xl gap-4">
+            <div className="bg-white rounded-xl shadow-lg w-full max-w-5xl flex">
+              <div className="flex-none w-1/3 p-6 flex flex-col items-center justify-center bg-cyan-50 rounded-l-xl">
                 {profile.profileUrl ? (
                   <img
-                    src={`${BASE_URL}${profile.profileUrl}`}
+                    src={profile.profileUrl} // CORRIGÉ : URL Cloudinary complète
                     alt="Profile"
                     className="w-48 h-48 rounded-full border-4 border-cyan-400 object-cover"
                   />
                 ) : (
-                  <div className="w-48 h-48 rounded-full bg-cyan-100 flex items-center justify-center text-6xl text-cyan-500 border-4 border-cyan-400">
-                    {profile.username?.charAt(0).toUpperCase() || 'U'}
+                  <div className="w-48 h-48 rounded-full bg-cyan-100 flex items-center justify-center text-6xl text-cyan-500">
+                    {profile.username?.charAt(0).toUpperCase()}
                   </div>
                 )}
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-green-500"/>
-                  <span className="text-green-600 font-semibold">Online</span>
-                </div>
               </div>
-
-       
-              <div className="flex-1 p-6 flex flex-col justify-center gap-6">
-                <h2 className="text-3xl font-bold text-gray-800 dark:text-white">{profile.username}</h2>
-                <p className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
-                  <Mail className="w-5 h-5 text-cyan-500" /> {profile.email}
-                </p>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                  <div className="bg-cyan-50 dark:bg-cyan-900 rounded-lg p-4 shadow flex items-center gap-2">
-                    <User className="w-5 h-5 text-cyan-600 dark:text-cyan-300"/>
-                    <div>
-                      <p className="text-gray-700 dark:text-white font-semibold">Username</p>
-                      <p className="text-gray-800 dark:text-gray-200 font-medium">{profile.username}</p>
-                    </div>
-                  </div>
-
-                  <div className="bg-cyan-50 dark:bg-cyan-900 rounded-lg p-4 shadow flex items-center gap-2">
-                    <Mail className="w-5 h-5 text-cyan-600 dark:text-cyan-300"/>
-                    <div>
-                      <p className="text-gray-700 dark:text-white font-semibold">Email</p>
-                      <p className="text-gray-800 dark:text-gray-200 font-medium">{profile.email}</p>
-                    </div>
-                  </div>
-                </div>
-
-               
+              <div className="flex-1 p-6">
+                <h2 className="text-3xl font-bold">{profile.username}</h2>
+                <p>{profile.email}</p>
                 <div className="flex gap-4 mt-4">
-                  <button 
-                    onClick={() => window.location.href='/settings'}
-                    className="flex items-center gap-2 bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg transition-all"
-                  >
-                    <Edit3 className="w-5 h-5"/> Edit Profile
-                  </button>
-                  <button 
-                    onClick={() => { localStorage.clear(); window.location.href='/signin'; }} 
-                    className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all"
-                  >
-                    <LogOut className="w-5 h-5"/> Logout
-                  </button>
-                </div>
-
-                <div className="mt-6 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg shadow-inner text-gray-600 dark:text-gray-300 text-center">
-                  Manage your account settings and personal information.
+                  <button onClick={() => window.location.href='/settings'} className="bg-cyan-500 text-white px-4 py-2 rounded-lg">Edit Profile</button>
                 </div>
               </div>
             </div>
