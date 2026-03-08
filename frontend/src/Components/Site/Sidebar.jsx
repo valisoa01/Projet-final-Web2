@@ -38,12 +38,12 @@ import { MdCategory } from "react-icons/md";
       
        <div>
         <div className="flex items-center gap-3 p-5 border-b border-gray-200 dark:border-gray-700">
-          <div className="w-12 h-12 rounded-full bg-cyan-500 flex items-center justify-center text-white font-bold ring-2 ring-cyan-300/30 overflow-hidden shadow-md">
+          <div className="w-[40px] aspect-square rounded-full bg-cyan-500 flex items-center justify-center text-white font-bold ring-2 ring-cyan-300/30 overflow-hidden shadow-md">
             {profile?.profileUrl ? (
               <img 
-                src={`${BASE_URL}${profile.profileUrl}`} 
+                src={profile.profileUrl} 
                 alt="Profile" 
-                className="w-full h-full  object-cover"
+                className="w-full h-full object-cover"
                 onError={(e) => { e.target.style.display = 'none'; }}
               />
             ) : (

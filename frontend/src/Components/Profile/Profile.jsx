@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import API from "../../api/axios"; // Supprimé BASE_URL
+import API from "../../api/axios"; 
 import Header from "../Site/Header";
 import Sidebar from "../Site/Sidebar";
 import { Mail, User, CheckCircle, Edit3, LogOut } from "lucide-react";

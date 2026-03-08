@@ -114,7 +114,7 @@ const Settings = () => {
                     <div className="relative w-32 h-32 mb-4">
                       {(previewImage || currentProfile) ? (
                         <img
-                          src={previewImage || currentProfile} // CORRIGÉ
+                          src={previewImage || currentProfile} 
                           alt="Profile"
                           className="w-32 h-32 rounded-full object-cover border-2 border-cyan-400"
                         />
