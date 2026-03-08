@@ -1,59 +1,37 @@
 import multer from 'multer';
-import fs from 'fs';
-import path from 'path';
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import dotenv from 'dotenv';
 
-const uploadDir = 'uploads/';
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+dotenv.config();
 
- const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const extension = path.extname(file.originalname);
-    cb(null, 'profile-' + uniqueSuffix + extension);
+ cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+ const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'plan-tracker-profiles', 
+    allowed_formats: ['jpg', 'png', 'jpeg', 'gif'],
+    transformation: [{ width: 500, height: 500, crop: 'limit' }] 
   },
 });
 
-  const fileFilter = (req, file, cb) => {
-  const allowedTypes = /jpeg|jpg|png|gif/;
-  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = allowedTypes.test(file.mimetype);
-
-  if (mimetype && extname) {
-    return cb(null, true);
-  } else {
-    cb(new Error('Seules les images JPEG, PNG et GIF sont autorisées'), false);
-  }
-};
-
-const upload = multer({
-  storage,
-  fileFilter,
-  limits: { 
-    fileSize: 5 * 1024 * 1024, 
-    files: 1 
-  },
+const upload = multer({ 
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 } // Limite 5MB
 });
 
- export const handleUploadError = (err, req, res, next) => {
-  if (err instanceof multer.MulterError) {
-    if (err.code === 'LIMIT_FILE_SIZE') {
-      return res.status(400).json({ message: 'Le fichier est trop volumineux (max 5MB)' });
-    }
-    if (err.code === 'LIMIT_FILE_COUNT') {
-      return res.status(400).json({ message: 'Trop de fichiers uploadés' });
-    }
+// Utilitaire pour supprimer une image de Cloudinary (optionnel)
+export const deleteFromCloudinary = async (publicId) => {
+  try {
+    await cloudinary.uploader.destroy(publicId);
+  } catch (error) {
+    console.error("Erreur suppression Cloudinary:", error);
   }
-  
-  if (err.message) {
-    return res.status(400).json({ message: err.message });
-  }
-  
-  next(err);
 };
 
 export default upload;

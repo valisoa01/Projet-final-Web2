@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import fs from 'fs';
 import path from 'path';
+import { v2 as cloudinary } from 'cloudinary';
 
 const prisma = new PrismaClient();
 
@@ -42,13 +43,15 @@ export const updateMe = async (req, res) => {
     const { username, email, password } = req.body;
     let updateData = {};
 
-     if (username) {
+    // 1. Validation du Username
+    if (username) {
       if (username.length < 3) {
         return res.status(400).json({ message: 'Le nom d\'utilisateur doit contenir au moins 3 caractères' });
       }
       updateData.username = username;
     }
 
+    // 2. Validation de l'Email
     if (email) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
@@ -57,6 +60,7 @@ export const updateMe = async (req, res) => {
       updateData.email = email;
     }
 
+    // 3. Validation du Password
     if (password) {
       if (password.length < 8) {
         return res.status(400).json({ message: 'Le mot de passe doit contenir au moins 8 caractères' });
@@ -64,23 +68,31 @@ export const updateMe = async (req, res) => {
       updateData.password = await bcrypt.hash(password, 10);
     }
 
-     if (req.file) {
-       const currentUser = await prisma.users.findUnique({
+    // 4. Gestion de l'Image avec Cloudinary
+    if (req.file) {
+      // Récupérer l'ancien profil pour nettoyer Cloudinary (optionnel mais recommandé)
+      const currentUser = await prisma.users.findUnique({
         where: { id: req.user.id },
         select: { profile: true }
       });
 
-      if (currentUser.profile) {
-        const oldPath = path.join(process.cwd(), currentUser.profile);
-        if (fs.existsSync(oldPath)) {
-          fs.unlinkSync(oldPath);
+      // Si l'utilisateur avait déjà une image sur Cloudinary, on peut supprimer l'ancienne
+      if (currentUser.profile && currentUser.profile.includes('cloudinary')) {
+        try {
+          // On extrait le public_id de l'URL pour supprimer l'image
+          const publicId = currentUser.profile.split('/').pop().split('.')[0];
+          await cloudinary.uploader.destroy(`plan-tracker-profiles/${publicId}`);
+        } catch (error) {
+          console.error("Erreur suppression ancienne image Cloudinary:", error);
         }
       }
 
-      updateData.profile = `/uploads/${req.file.filename}`;
+      // req.file.path contient l'URL sécurisée générée par cloudinary-storage
+      updateData.profile = req.file.path;
     }
 
-     const updatedUser = await prisma.users.update({
+    // 5. Mise à jour dans la base de données
+    const updatedUser = await prisma.users.update({
       where: { id: req.user.id },
       data: updateData,
       select: {
@@ -97,7 +109,7 @@ export const updateMe = async (req, res) => {
       id: updatedUser.id,
       username: updatedUser.username,
       email: updatedUser.email,
-      profileUrl: updatedUser.profile,
+      profileUrl: updatedUser.profile, 
       message: 'Profil mis à jour avec succès'
     });
 
