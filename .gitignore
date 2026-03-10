@@ -25,3 +25,4 @@ backend/uploads
 backend/node-moduls
 fronted/ ./env
 
+node_modules
