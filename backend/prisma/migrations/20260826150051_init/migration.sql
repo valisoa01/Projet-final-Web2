@@ -45,6 +45,7 @@ CREATE TABLE "public"."Expenses" (
     "type" VARCHAR(255),
     "description" VARCHAR(255),
     "receipt" VARCHAR(255),
+    "colonne" VARCHAR(255),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "userId" INTEGER NOT NULL,
